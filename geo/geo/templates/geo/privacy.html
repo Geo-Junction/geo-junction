@@ -1,0 +1,74 @@
+{% extends 'aplus/base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy – Aplus Initiative{% endblock %}
+
+{% block meta_description %}Read the Aplus Initiative privacy policy. Learn how we collect, use, and protect your personal information.{% endblock %}
+
+{% block content %}
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center" data-animate>
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-lg p-4 p-md-5">
+                    <h1 class="display-5 fw-bold mb-4">Privacy <span class="text-gradient">Policy</span></h1>
+                    <p class="text-muted">Last updated: {% now "F d, Y" %}</p>
+                    <hr>
+
+                    <p class="lead">At Aplus Initiative, we take your privacy seriously. This policy explains how we collect, use, and protect your personal information.</p>
+
+                    <h4 class="fw-bold mt-4">1. Information We Collect</h4>
+                    <p>When you create an account, we collect:</p>
+                    <ul>
+                        <li>Your name, email address, and phone number</li>
+                        <li>Your CBU student number (if provided)</li>
+                        <li>Your school and year of study</li>
+                        <li>Information you provide when booking tutoring sessions</li>
+                        <li>Your interactions with our platform (courses viewed, tests taken, etc.)</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">2. How We Use Your Information</h4>
+                    <ul>
+                        <li>To provide and improve our tutoring services</li>
+                        <li>To personalize your learning experience</li>
+                        <li>To communicate with you about your bookings and account</li>
+                        <li>To send you updates, announcements, and promotional materials (with your consent)</li>
+                        <li>To analyze usage patterns and improve our platform</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">3. How We Protect Your Data</h4>
+                    <ul>
+                        <li>We use industry-standard encryption to protect your data</li>
+                        <li>We store personal information securely and limit access to authorized personnel</li>
+                        <li>We never sell your personal information to third parties</li>
+                        <li>We comply with all applicable data protection laws</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">4. Third-Party Services</h4>
+                    <p>We may use third-party services (e.g., payment processors, email services) to support our platform. These services have their own privacy policies and data protection practices.</p>
+
+                    <h4 class="fw-bold mt-4">5. Your Rights</h4>
+                    <ul>
+                        <li>You can access, update, or delete your personal information at any time</li>
+                        <li>You can opt out of marketing communications</li>
+                        <li>You can request a copy of the data we hold about you</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">6. Cookies</h4>
+                    <p>We use cookies to enhance your experience, remember your preferences, and analyze site usage. You can control cookie settings through your browser.</p>
+
+                    <h4 class="fw-bold mt-4">7. Contact Us</h4>
+                    <p>If you have any questions about this privacy policy, please <a href="{% url 'aplus:contact' %}">contact us</a>.</p>
+
+                    <div class="mt-4">
+                        <a href="{% url 'aplus:terms' %}" class="btn btn-outline-secondary me-2">Terms of Service</a>
+                        <a href="{% url 'aplus:contact' %}" class="btn btn-outline-primary">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

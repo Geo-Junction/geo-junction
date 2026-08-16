@@ -1,0 +1,385 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:report.title|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:report.title }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       REPORT DETAIL – Additional styles
+       ============================================================== */
+    .report-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .report-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/report-detail-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .report-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .report-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .report-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .report-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .report-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .report-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .report-hero .meta {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.95rem;
+    }
+
+    /* Detail card – glass */
+    .detail-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+    .detail-card:hover {
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+    }
+    .detail-card h5 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .detail-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .detail-card ul li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .detail-card ul li:last-child {
+        border-bottom: none;
+    }
+    .detail-card .btn-download {
+        border-radius: 50px;
+        padding: 0.6rem 1.8rem;
+        font-weight: 600;
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        transition: var(--transition);
+    }
+    .detail-card .btn-download:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(220, 53, 69, 0.2);
+    }
+    .detail-card .btn-primary {
+        border-radius: 50px;
+        padding: 0.6rem 1.8rem;
+        font-weight: 600;
+    }
+
+    /* Report content */
+    .report-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: var(--gray-700);
+    }
+    .report-content h2,
+    .report-content h3 {
+        margin-top: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+
+    /* Related reports */
+    .related-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .related-item:last-child {
+        border-bottom: none;
+    }
+    .related-item a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+    }
+    .related-item a:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+    }
+    .related-item small {
+        display: block;
+        color: var(--gray-600);
+        font-size: 0.85rem;
+    }
+
+    /* Sidebar – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-card h5 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    /* CTA – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .report-hero h1 {
+            font-size: 2rem;
+        }
+        .report-content {
+            font-size: 0.95rem;
+        }
+        .detail-card ul li {
+            flex-wrap: wrap;
+        }
+        .detail-card .btn-download,
+        .detail-card .btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+        .sidebar-card {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="report-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:report_list' %}">Reports</a></li>
+                    <li class="breadcrumb-item active">{{ report.title|truncatechars:50 }}</li>
+                </ol>
+            </nav>
+            <h1>{{ report.title }}</h1>
+            <div class="meta d-flex flex-wrap gap-3">
+                <span><i class="far fa-calendar-alt me-1"></i> Published: {{ report.publication_date|date:"F d, Y" }}</span>
+                <span><i class="fas fa-tag me-1"></i> {{ report.get_report_type_display }}</span>
+                {% if report.project %}
+                    <span><i class="fas fa-bullseye me-1"></i> {{ report.project.title }}</span>
+                {% endif %}
+                {% if report.is_public %}
+                    <span class="badge bg-success">Public</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:report_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Reports
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# REPORT DETAIL #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main content #}
+                <div class="col-lg-8">
+                    <div class="detail-card">
+                        <h5><i class="fas fa-file-pdf text-danger me-2"></i> Report Overview</h5>
+                        <div class="report-content">
+                            {% if report.author %}
+                                <p><strong>Author:</strong> {{ report.author.get_full_name }}</p>
+                            {% endif %}
+                            {% if report.project %}
+                                <p><strong>Project:</strong> <a href="{% url 'geo:project_detail' slug=report.project.slug %}" class="text-decoration-none">{{ report.project.title }}</a></p>
+                            {% endif %}
+                            <p><strong>Type:</strong> {{ report.get_report_type_display }}</p>
+                            <p><strong>Published:</strong> {{ report.publication_date|date:"F d, Y" }}</p>
+                            <p><strong>Downloads:</strong> {{ report.download_count }}</p>
+                            <p><strong>File Size:</strong> {{ report.file_size|default:"N/A" }} KB</p>
+                            <hr>
+                            <p>{{ report.description|default:"No additional description available." }}</p>
+                        </div>
+                        <div class="mt-4 d-flex flex-wrap gap-2">
+                            <a href="{{ report.file.url }}" target="_blank" class="btn btn-download">
+                                <i class="fas fa-download me-2"></i> Download Report
+                            </a>
+                            <a href="{% url 'geo:contact' %}" class="btn btn-primary">
+                                <i class="fas fa-envelope me-1"></i> Request More Info
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-4">
+                    <div class="sidebar-card">
+                        <h5><i class="fas fa-info-circle text-primary me-2"></i> Report Info</h5>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between py-2 border-bottom"><strong>Type</strong> {{ report.get_report_type_display }}</li>
+                            <li class="d-flex justify-content-between py-2 border-bottom"><strong>Published</strong> {{ report.publication_date|date:"F d, Y" }}</li>
+                            <li class="d-flex justify-content-between py-2 border-bottom"><strong>Downloads</strong> {{ report.download_count }}</li>
+                            <li class="d-flex justify-content-between py-2 border-bottom"><strong>File Size</strong> {{ report.file_size|default:"N/A" }} KB</li>
+                            <li class="d-flex justify-content-between py-2 border-bottom"><strong>Public</strong> {% if report.is_public %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</li>
+                            {% if report.project %}
+                                <li class="d-flex justify-content-between py-2"><strong>Project</strong> <a href="{% url 'geo:project_detail' slug=report.project.slug %}" class="text-decoration-none">{{ report.project.title }}</a></li>
+                            {% endif %}
+                            {% if report.author %}
+                                <li class="d-flex justify-content-between py-2"><strong>Author</strong> {{ report.author.get_full_name }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    {# Related reports #}
+                    {% if related %}
+                        <div class="sidebar-card">
+                            <h5><i class="fas fa-link text-primary me-2"></i> Related Reports</h5>
+                            {% for rel in related %}
+                                <div class="related-item">
+                                    <a href="{% url 'geo:report_detail' slug=rel.slug %}">{{ rel.title }}</a>
+                                    <small>{{ rel.publication_date|date:"M d, Y" }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# Quick contact #}
+                    <div class="sidebar-card" style="background: var(--primary) !important; border-color: var(--primary);">
+                        <h5 class="text-white"><i class="fas fa-phone me-2"></i> Need More Information?</h5>
+                        <p class="text-white-50 small">Our team can provide additional reports or custom analysis.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Need More <span class="text-accent">Insights</span>?</h2>
+            <p class="lead opacity-75">Browse our full library of technical documents and reports.</p>
+            <a href="{% url 'geo:document_list' %}" class="btn btn-cta mt-3">
+                <i class="fas fa-file-alt me-2"></i> Document Library
+            </a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:report_list' %}" class="text-muted small"><i class="fas fa-file-pdf me-1"></i> Reports</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:document_list' %}" class="text-muted small"><i class="fas fa-file-alt me-1"></i> Documents</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

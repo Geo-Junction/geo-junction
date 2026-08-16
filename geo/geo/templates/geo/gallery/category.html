@@ -1,0 +1,427 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:category_label|add:" – Geo‑Junction Gallery" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"View "|add:category_label|add:" images from Geo‑Junction's gallery." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       GALLERY CATEGORY – Additional styles
+       ============================================================== */
+    .category-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .category-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/category-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .category-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .category-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .category-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .category-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+        justify-content: center;
+    }
+    .category-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .category-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .category-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Gallery grid */
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        transition: var(--transition);
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .gallery-item:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent);
+    }
+    .gallery-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+    .gallery-item:hover img {
+        transform: scale(1.04);
+    }
+    .gallery-item .overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+        padding: 1.5rem;
+        color: white;
+        opacity: 0;
+        transition: var(--transition);
+        pointer-events: none;
+    }
+    .gallery-item:hover .overlay {
+        opacity: 1;
+    }
+    .gallery-item .overlay h6 {
+        font-weight: 600;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+    }
+    .gallery-item .overlay small {
+        opacity: 0.8;
+        font-size: 0.8rem;
+    }
+    .gallery-item .badge-category {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.6rem;
+        padding: 0.2rem 0.7rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 2;
+    }
+
+    /* Lightbox */
+    .lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.92);
+        z-index: 1050;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        backdrop-filter: blur(8px);
+    }
+    .lightbox.active {
+        display: flex;
+    }
+    .lightbox .lightbox-content {
+        position: relative;
+        max-width: 90%;
+        max-height: 90vh;
+    }
+    .lightbox .lightbox-content img {
+        max-width: 100%;
+        max-height: 80vh;
+        border-radius: var(--radius);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .lightbox .close-btn {
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        font-size: 2.5rem;
+        color: white;
+        cursor: pointer;
+        background: none;
+        border: none;
+        transition: var(--transition);
+        z-index: 10;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .lightbox .close-btn:hover {
+        color: var(--accent);
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
+    .lightbox .caption {
+        color: rgba(255, 255, 255, 0.85);
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1.05rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .category-hero h1 {
+            font-size: 2rem;
+        }
+        .gallery-item img {
+            height: 140px;
+        }
+        .lightbox .close-btn {
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            width: 40px;
+            height: 40px;
+        }
+        .lightbox .caption {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="category-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:gallery_list' %}">Gallery</a></li>
+                    <li class="breadcrumb-item active">{{ category_label }}</li>
+                </ol>
+            </nav>
+            <h1><span class="highlight">{{ category_label }}</span></h1>
+            <p class="lead text-white-50">Images from this category.</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:gallery_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-th me-1"></i> All Gallery
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# GALLERY GRID #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            {% if page_obj %}
+                <div class="row g-4">
+                    {% for image in page_obj %}
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="gallery-item" onclick="openLightbox('{{ image.image.url }}', '{{ image.title|default:image.caption|escapejs }}')">
+                                <img src="{{ image.image.url }}" alt="{{ image.title|default:image.caption }}" loading="lazy">
+                                <span class="badge-category">{{ image.get_category_display }}</span>
+                                <div class="overlay">
+                                    <h6>{{ image.title|default:"Untitled"|truncatechars:25 }}</h6>
+                                    <small>{{ image.get_category_display }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Pagination #}
+                {% if page_obj.has_other_pages %}
+                    <nav class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page=1">&laquo;&laquo;</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                            {% endif %}
+                            <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                            {% if page_obj.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;&raquo;</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="col-12 text-center py-5 empty-state">
+                    <i class="fas fa-images fa-3x text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted">No images in this category</h4>
+                    <p class="text-muted">Check back later or explore other categories.</p>
+                    <a href="{% url 'geo:gallery_list' %}" class="btn btn-outline-primary mt-3">View All Gallery</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Explore More <span style="color: var(--accent);">Images</span></h2>
+            <p class="lead opacity-75">Discover more visual stories from the field.</p>
+            <a href="{% url 'geo:gallery_list' %}" class="btn btn-cta mt-3"><i class="fas fa-camera me-2"></i> View All Gallery</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:gallery_list' %}" class="text-muted small"><i class="fas fa-th me-1"></i> Gallery</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# LIGHTBOX – JavaScript #}
+    {# ============================================================== #}
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+        <button class="close-btn" onclick="closeLightbox(event)" aria-label="Close lightbox">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="">
+            <p class="caption" id="lightboxCaption"></p>
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src, caption) {
+            document.getElementById('lightboxImage').src = src;
+            document.getElementById('lightboxCaption').textContent = caption || '';
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            if (e.target === document.getElementById('lightbox') || e.target.closest('.close-btn')) {
+                document.getElementById('lightbox').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('lightbox').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+{% endblock content %}

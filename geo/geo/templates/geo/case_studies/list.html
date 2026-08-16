@@ -1,0 +1,191 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Case Studies – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Geo‑Junction case studies showcasing successful geophysical exploration projects." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    .cs-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .cs-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/case-studies-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .cs-hero .container { position: relative; z-index: 1; }
+    .cs-hero h1 { font-weight: 800; font-size: 3rem; }
+    .cs-hero .highlight { background: linear-gradient(135deg, var(--accent), #f9e79f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cs-hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+
+    .cs-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .cs-card:hover { transform: translateY(-6px); box-shadow: 0 16px 56px rgba(0,0,0,0.08); border-color: var(--accent); }
+    .cs-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+    .cs-card:hover img { transform: scale(1.02); }
+    .cs-card .card-body { padding: 1.5rem; flex: 1; }
+    .cs-card .card-body h5 { font-weight: 700; }
+    .cs-card .card-body .client { color: var(--gray-600); font-size: 0.9rem; }
+    .cs-card .card-body .summary { color: var(--gray-600); font-size: 0.95rem; }
+    .cs-card .card-body .featured-badge {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.2rem 0.8rem;
+        border-radius: 50px;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover { background: var(--primary); color: white; }
+    .pagination .page-item.active .page-link { background: var(--primary); border-color: var(--primary); color: white; }
+
+    .empty-state i { opacity: 0.4; }
+
+    @media (max-width: 767.98px) {
+        .cs-hero h1 { font-size: 2.2rem; }
+        .cs-card img { height: 140px; }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    <section class="cs-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Case Studies</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Case <span class="highlight">Studies</span></h1>
+            <p class="lead">Real-world success stories from our exploration projects.</p>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto"><a href="javascript:history.back()" class="btn btn-outline-accent btn-sm"><i class="fas fa-arrow-left me-1"></i> Back</a></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+
+    <section class="py-5">
+        <div class="container">
+            {% if featured %}
+                <div class="mb-5">
+                    <h3 class="fw-bold text-primary mb-3">Featured Case Studies</h3>
+                    <div class="row g-4">
+                        {% for study in featured %}
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="cs-card">
+                                    <img src="{% if study.featured_image %}{{ study.featured_image.url }}{% else %}{% static 'images/case-study-placeholder.jpg' %}{% endif %}" alt="{{ study.title }}">
+                                    <div class="card-body">
+                                        <span class="featured-badge"><i class="fas fa-star me-1"></i> Featured</span>
+                                        <h5>{{ study.title }}</h5>
+                                        <p class="client"><i class="fas fa-user me-1"></i> {{ study.client_name|default:"Confidential Client" }}</p>
+                                        <p class="summary">{{ study.challenge|truncatechars:80 }}</p>
+                                        <a href="{% url 'geo:case_study_detail' slug=study.slug %}" class="btn btn-sm btn-outline-primary mt-2">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row g-4">
+                {% for study in page_obj %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="cs-card">
+                            <img src="{% if study.featured_image %}{{ study.featured_image.url }}{% else %}{% static 'images/case-study-placeholder.jpg' %}{% endif %}" alt="{{ study.title }}">
+                            <div class="card-body">
+                                <h5>{{ study.title }}</h5>
+                                <p class="client"><i class="fas fa-user me-1"></i> {{ study.client_name|default:"Confidential Client" }}</p>
+                                <p class="summary">{{ study.challenge|truncatechars:80 }}</p>
+                                <a href="{% url 'geo:case_study_detail' slug=study.slug %}" class="btn btn-sm btn-outline-primary mt-2">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-bullseye fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No case studies available</h4>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1">&laquo;&laquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% endif %}
+                        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Want to Discuss a <span class="text-accent">Project</span>?</h2>
+            <p class="lead opacity-75">Contact us to explore how we can help you.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto"><a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,359 @@
+{% extends 'aplus/base.html' %}
+{% load static %}
+
+{% block title %}Tutor Sign Up – Aplus Initiative{% endblock %}
+
+{% block meta_description %}Become a verified tutor on Aplus Initiative. Share your expertise, help CBU students excel, and earn income.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .signup-form input,
+    .signup-form select,
+    .signup-form textarea {
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background-color: #f8fafc;
+    }
+    .signup-form input:focus,
+    .signup-form select:focus,
+    .signup-form textarea:focus {
+        border-color: #2563eb;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        background-color: #ffffff;
+    }
+    .password-toggle {
+        z-index: 10;
+        cursor: pointer;
+        color: #6c757d;
+        transition: color 0.2s;
+    }
+    .password-toggle:hover {
+        color: #2563eb;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .input-group-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        pointer-events: none;
+        z-index: 5;
+    }
+    .signup-form .form-control {
+        padding-left: 2.5rem;
+    }
+    .signup-form textarea.form-control {
+        padding-left: 2.5rem;
+        min-height: 100px;
+    }
+    .role-badge {
+        display: inline-block;
+        background: #dbeafe;
+        color: #2563eb;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    .verification-notice {
+        background: #f0f4ff;
+        border-left: 4px solid #2563eb;
+        border-radius: 0.5rem;
+        padding: 1rem 1.25rem;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="section-padding d-flex align-items-center" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center" data-animate>
+            <div class="col-lg-8 col-md-10">
+                <div class="card border-0 shadow-lg p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
+                        <h3 class="fw-bold">Tutor Sign Up</h3>
+                        <p class="text-muted">Share your knowledge, help students succeed, and earn income.</p>
+                        <span class="role-badge"><i class="fas fa-check-circle me-1"></i> Tutor Account</span>
+                    </div>
+
+                    <!-- ✅ Verification Notice -->
+                    <div class="verification-notice mb-4 d-flex align-items-start">
+                        <i class="fas fa-info-circle fa-lg text-primary me-3 mt-1"></i>
+                        <div>
+                            <strong class="d-block">Verification Required</strong>
+                            <p class="mb-0 small">
+                                After signing up, your profile will be reviewed by our team. 
+                                You'll receive an email notification once your account is verified. 
+                                Until then, you won't be able to accept bookings.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form method="post" class="signup-form" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="user_type" value="tutor">
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            <!-- Email -->
+                            <div class="col-12">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-envelope me-1 text-muted"></i> Email Address <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-envelope"></i></span>
+                                    {{ form.email }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Full Name -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.full_name.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-user me-1 text-muted"></i> Full Name
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-user"></i></span>
+                                    {{ form.full_name }}
+                                </div>
+                                {% if form.full_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.full_name.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Username -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-at me-1 text-muted"></i> Username
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-at"></i></span>
+                                    {{ form.username }}
+                                </div>
+                                {% if form.username.help_text %}
+                                    <div class="form-text">{{ form.username.help_text }}</div>
+                                {% endif %}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.username.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-phone me-1 text-muted"></i> Phone Number
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-phone"></i></span>
+                                    {{ form.phone_number }}
+                                </div>
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Bio -->
+                            <div class="col-12">
+                                <label for="{{ form.bio.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-info-circle me-1 text-muted"></i> Short Bio <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon" style="top: 15px;"><i class="fas fa-info-circle"></i></span>
+                                    {{ form.bio }}
+                                </div>
+                                <div class="form-text">Tell students about your expertise, teaching experience, and approach.</div>
+                                {% if form.bio.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bio.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Qualifications -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.qualifications.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-graduation-cap me-1 text-muted"></i> Qualifications <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-graduation-cap"></i></span>
+                                    {{ form.qualifications }}
+                                </div>
+                                <div class="form-text">e.g., BSc Mathematics, MSc Computer Science.</div>
+                                {% if form.qualifications.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.qualifications.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Expertise Courses -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.expertise_courses.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-book me-1 text-muted"></i> Courses You Can Teach
+                                </label>
+                                {{ form.expertise_courses }}
+                                <div class="form-text">Hold Ctrl/Cmd to select multiple courses.</div>
+                                {% if form.expertise_courses.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.expertise_courses.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Hourly Rate -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.hourly_rate.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-money-bill-wave me-1 text-muted"></i> Hourly Rate (ZMW)
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-money-bill-wave"></i></span>
+                                    {{ form.hourly_rate }}
+                                </div>
+                                <div class="form-text">Recommended: K50 – K200 per hour.</div>
+                                {% if form.hourly_rate.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.hourly_rate.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-lock me-1 text-muted"></i> Password <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-lock"></i></span>
+                                    {{ form.password1 }}
+                                    <span class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" 
+                                          onclick="togglePassword('{{ form.password1.id_for_label }}')" 
+                                          aria-label="Show password">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </span>
+                                </div>
+                                {% if form.password1.help_text %}
+                                    <div class="form-text">{{ form.password1.help_text|safe }}</div>
+                                {% endif %}
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-check-circle me-1 text-muted"></i> Confirm Password <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <span class="input-group-icon"><i class="fas fa-check-circle"></i></span>
+                                    {{ form.password2 }}
+                                    <span class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" 
+                                          onclick="togglePassword('{{ form.password2.id_for_label }}')" 
+                                          aria-label="Show password">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </span>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Apply as Tutor
+                            </button>
+                        </div>
+
+                        <p class="text-muted small text-center mt-3">
+                            By signing up, you agree to our 
+                            <a href="{% url 'aplus:terms' %}" class="text-decoration-none">Terms of Service</a> and 
+                            <a href="{% url 'aplus:privacy' %}" class="text-decoration-none">Privacy Policy</a>.
+                        </p>
+                    </form>
+
+                    <p class="text-center mt-4 mb-0">
+                        Already have an account? <a href="{% url 'aplus:login' %}" class="fw-bold">Log In</a>
+                    </p>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="row g-3 mt-4 text-center">
+                    <div class="col-4">
+                        <i class="fas fa-check-circle text-success me-1"></i> Verified Profile
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-shield-alt text-primary me-1"></i> Secure
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-coins text-warning me-1"></i> Earn Income
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = document.querySelector(`[onclick="togglePassword('${fieldId}')"] i`);
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    }
+</script>
+{% endblock %}

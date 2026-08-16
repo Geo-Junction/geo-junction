@@ -1,0 +1,162 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"FAQs – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Frequently asked questions about Geo‑Junction's geophysical exploration services." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    .faqs-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .faqs-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/faqs-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .faqs-hero .container { position: relative; z-index: 1; }
+    .faqs-hero h1 { font-weight: 800; font-size: 3rem; }
+    .faqs-hero .highlight { background: linear-gradient(135deg, var(--accent), #f9e79f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .faqs-hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+
+    .faq-category {
+        margin-bottom: 3rem;
+    }
+    .faq-category h3 {
+        font-weight: 700;
+        color: var(--primary);
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+    }
+    .faq-item {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(2px);
+        border-radius: var(--radius);
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    .faq-item:hover { background: rgba(255, 255, 255, 0.9); box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+    .faq-item .question {
+        font-weight: 600;
+        color: var(--gray-900);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .faq-item .question i { color: var(--primary); transition: var(--transition); }
+    .faq-item .answer {
+        margin-top: 0.5rem;
+        color: var(--gray-700);
+        line-height: 1.6;
+        display: none;
+    }
+    .faq-item .answer.show { display: block; }
+    .faq-item .question .toggle-icon { transition: transform 0.3s; }
+    .faq-item .question .toggle-icon.rotated { transform: rotate(180deg); }
+
+    .empty-state i { opacity: 0.4; }
+
+    @media (max-width: 767.98px) {
+        .faqs-hero h1 { font-size: 2.2rem; }
+        .faq-item { padding: 1rem; }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    <section class="faqs-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">FAQs</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Frequently Asked <span class="highlight">Questions</span></h1>
+            <p class="lead">Find answers to common questions about our services.</p>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto"><a href="javascript:history.back()" class="btn btn-outline-accent btn-sm"><i class="fas fa-arrow-left me-1"></i> Back</a></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+
+    <section class="py-5">
+        <div class="container">
+            {% if categories %}
+                {% for category in categories %}
+                    <div class="faq-category">
+                        <h3>{{ category.name }}</h3>
+                        {% for faq in category.faqs.all %}
+                            <div class="faq-item" onclick="toggleFAQ(this)">
+                                <div class="question">
+                                    <span>{{ faq.question }}</span>
+                                    <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                                </div>
+                                <div class="answer">{{ faq.answer|safe }}</div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No FAQs in this category.</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5 empty-state">
+                    <i class="fas fa-question-circle fa-3x text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted">No FAQs available</h4>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Still Have <span class="text-accent">Questions</span>?</h2>
+            <p class="lead opacity-75">Contact our team for personalised assistance.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto"><a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFAQ(el) {
+            const answer = el.querySelector('.answer');
+            const icon = el.querySelector('.toggle-icon i');
+            answer.classList.toggle('show');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+    </script>
+{% endblock content %}

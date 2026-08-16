@@ -1,0 +1,14 @@
+{# Checks if there are any messages to display #}
+{% if messages %}
+<ul class="messages container">
+    {# Loops through each message #}
+    {% for message in messages %}
+    {# Adds Bootstrap alert classes based on Django's message tags (e.g., 'success', 'error') #}
+    <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">
+        {{ message }}
+        {# Bootstrap close button for alerts #}
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

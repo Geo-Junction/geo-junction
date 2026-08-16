@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aplus Initiative – CBU's Premier Tutoring Platform{% endblock title %}
+
+{% block meta_description %}Aplus Initiative provides CBU students with structured course notes, tutorial sheets, practice tests, and verified tutors. Join thousands of students excelling at Copperbelt University.{% endblock meta_description %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO SECTION – Full-width with animated gradient #}
+    {# ============================================================== #}
+    <section class="hero-section d-flex align-items-center">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7 text-center text-lg-start" data-animate>
+                    <h1 class="hero-title display-3 fw-bold mb-3">
+                        Excel at CBU with <span class="text-gradient">Aplus Initiative</span>
+                    </h1>
+                    <p class="hero-subtitle lead mb-4">
+                        Get access to structured course materials, practice tests, 
+                        and verified tutors – all aligned with the CBU syllabus.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                        <a href="{% url 'aplus:course_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-book-open me-2"></i>Explore Courses
+                        </a>
+                        <a href="{% url 'aplus:signup' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Get Started Free
+                        </a>
+                    </div>
+                    {# Stats #}
+                    <div class="row g-3 mt-5 stats-row">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="{{ stats.total_students|default:'0' }}">0</span>
+                                <span class="stat-label">Students</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="{{ stats.total_courses|default:'8' }}">0</span>
+                                <span class="stat-label">Courses</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <span class="stat-number" data-count="{{ stats.total_tutors|default:'0' }}">0</span>
+                                <span class="stat-label">Tutors</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center" data-animate>
+                    <img src="{% static 'images/hero-illustration.svg' %}" alt="Learning illustration" 
+                         class="img-fluid hero-image" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FEATURED COURSES SECTION #}
+    {# ============================================================== #}
+    <section class="section-padding bg-light" data-animate>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Our <span class="text-gradient">8 Core Courses</span></h2>
+                <p class="section-subtitle">
+                    Aligned with the CBU syllabus for NQ and Business students.
+                    <br class="d-none d-md-block">
+                    Master every subject with expert guidance.
+                </p>
+            </div>
+            <div class="row g-4">
+                {% for course in featured_courses %}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="course-card h-100">
+                        <div class="course-card-body">
+                            <div class="course-icon">
+                                <i class="fas fa-{% cycle 'flask' 'calculator' 'atom' 'dna' 'laptop' 'chart-line' 'coins' 'file-invoice' %}"></i>
+                            </div>
+                            <h5 class="course-code">{{ course.code }}</h5>
+                            <h6 class="course-name">{{ course.name|truncatechars:30 }}</h6>
+                            <p class="course-meta">
+                                <span class="badge bg-primary-soft">{{ course.get_level_display }}</span>
+                            </p>
+                            <a href="{% url 'aplus:course_detail' slug=course.slug %}" class="btn btn-outline-primary btn-sm w-100 mt-2">
+                                View Course <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                    <div class="col-12 text-center">
+                        <p>Courses coming soon. Please check back later.</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'aplus:course_list' %}" class="btn btn-primary btn-lg">
+                    Browse All Courses <i class="fas fa-long-arrow-alt-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# HOW IT WORKS SECTION #}
+    {# ============================================================== #}
+    <section class="section-padding" data-animate>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">How <span class="text-gradient">Aplus</span> Works</h2>
+                <p class="section-subtitle">
+                    Simple steps to start learning and excelling at CBU.
+                </p>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <div class="step-card text-center">
+                        <div class="step-number">1</div>
+                        <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+                        <h5 class="step-title">Sign Up Free</h5>
+                        <p class="step-text">Create your account in minutes. No payment required to get started.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="step-card text-center">
+                        <div class="step-number">2</div>
+                        <div class="step-icon"><i class="fas fa-book-open"></i></div>
+                        <h5 class="step-title">Access Materials</h5>
+                        <p class="step-text">Browse courses, download tutorial sheets, and take practice tests.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="step-card text-center">
+                        <div class="step-number">3</div>
+                        <div class="step-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h5 class="step-title">Book a Tutor</h5>
+                        <p class="step-text">Get 1-on-1 help from verified CBU tutors when you need it.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# TUTOR SHOWCASE #}
+    {# ============================================================== #}
+    <section class="section-padding bg-primary-soft" data-animate>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Meet Our <span class="text-gradient">Verified Tutors</span></h2>
+                <p class="section-subtitle">
+                    Learn from experts who understand the CBU curriculum.
+                </p>
+            </div>
+            <div class="row g-4">
+                {% for tutor in tutors|slice:":4" %}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="tutor-card text-center">
+                        <div class="tutor-avatar">
+                            {% if tutor.user.profile_picture %}
+                                <img src="{{ tutor.user.profile_picture.url }}" alt="{{ tutor.display_name }}">
+                            {% else %}
+                                <div class="avatar-placeholder">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                            {% endif %}
+                            {% if tutor.is_verified %}
+                                <span class="verified-badge"><i class="fas fa-check-circle"></i></span>
+                            {% endif %}
+                        </div>
+                        <h6 class="tutor-name">{{ tutor.display_name|default:tutor.user.full_name }}</h6>
+                        <p class="tutor-title">{{ tutor.headline|truncatechars:30|default:"CBU Tutor" }}</p>
+                        <div class="tutor-rating">
+                            <i class="fas fa-star text-warning"></i>
+                            <span>{{ tutor.average_rating|floatformat:1 }}</span>
+                            <span class="text-muted">({{ tutor.total_reviews }})</span>
+                        </div>
+                        <a href="{% url 'aplus:tutor_detail' public_id=tutor.public_id %}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                            View Profile <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                    <div class="col-12 text-center">
+                        <p>Tutors coming soon. Please check back later.</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'aplus:tutor_list' %}" class="btn btn-primary btn-lg">
+                    View All Tutors <i class="fas fa-long-arrow-alt-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# LEARNING RESOURCES CARDS #}
+    {# ============================================================== #}
+    <section class="section-padding" data-animate>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Learning <span class="text-gradient">Resources</span></h2>
+                <p class="section-subtitle">
+                    Everything you need to succeed, all in one place.
+                </p>
+            </div>
+            <div class="row g-4">
+                {# Tutorial Sheets #}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="resource-card text-center">
+                        <div class="resource-icon"><i class="fas fa-file-pdf text-danger"></i></div>
+                        <h6 class="resource-title">Tutorial Sheets</h6>
+                        <p class="resource-text">Download PDFs with solutions for all 8 core courses.</p>
+                        <a href="{% url 'aplus:tutorial_sheet_list' %}" class="btn btn-sm btn-outline-danger">
+                            Browse <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                {# Practice Tests #}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="resource-card text-center">
+                        <div class="resource-icon"><i class="fas fa-check-circle text-success"></i></div>
+                        <h6 class="resource-title">Practice Tests</h6>
+                        <p class="resource-text">Test your knowledge with instant feedback and results.</p>
+                        <a href="{% url 'aplus:practice_test_list' %}" class="btn btn-sm btn-outline-success">
+                            Start <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                {# Book a Tutor #}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="resource-card text-center">
+                        <div class="resource-icon"><i class="fas fa-chalkboard-teacher text-primary"></i></div>
+                        <h6 class="resource-title">Book a Tutor</h6>
+                        <p class="resource-text">Get 1-on-1 help from verified CBU tutors.</p>
+                        <a href="{% url 'aplus:available_meetings' %}" class="btn btn-sm btn-outline-primary">
+                            Book Now <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                {# Resources #}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="resource-card text-center">
+                        <div class="resource-icon"><i class="fas fa-book text-warning"></i></div>
+                        <h6 class="resource-title">Resources</h6>
+                        <p class="resource-text">Books, articles, and videos to deepen your understanding.</p>
+                        <a href="{% url 'aplus:resource_list' %}" class="btn btn-sm btn-outline-warning">
+                            Explore <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# TESTIMONIALS CAROUSEL #}
+    {# ============================================================== #}
+    <section class="section-padding bg-light" data-animate>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">What Students Are <span class="text-gradient">Saying</span></h2>
+            </div>
+            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-inner">
+                    {% for testimonial in testimonials %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="testimonial-content text-center">
+                            <i class="fas fa-quote-left fa-2x text-primary opacity-50 mb-3"></i>
+                            <p class="testimonial-text">"{{ testimonial.comment|truncatechars:200 }}"</p>
+                            <div class="testimonial-author">
+                                <div class="testimonial-rating">
+                                    {% for i in "12345"|make_list %}
+                                        <i class="fas fa-star {% if forloop.counter <= testimonial.rating %}text-warning{% else %}text-muted opacity-25{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                                <h6 class="fw-bold mb-0">{{ testimonial.student.full_name }}</h6>
+                                <small class="text-muted">
+                                    {% if testimonial.booking.meeting.course %}
+                                        {{ testimonial.booking.meeting.course.code }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="carousel-item active">
+                        <div class="testimonial-content text-center">
+                            <i class="fas fa-quote-left fa-2x text-primary opacity-50 mb-3"></i>
+                            <p class="testimonial-text">"Aplus Initiative transformed my study routine. I went from struggling to excelling in all my courses!"</p>
+                            <div class="testimonial-author">
+                                <h6 class="fw-bold mb-0">— CBU Student</h6>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA SECTION #}
+    {# ============================================================== #}
+    <section class="section-padding bg-primary text-white text-center" data-animate>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="display-5 fw-bold mb-3">Ready to Excel at CBU?</h2>
+                    <p class="lead mb-4 opacity-75">
+                        Join thousands of students who are already using Aplus Initiative to achieve better grades.
+                    </p>
+                    <a href="{% url 'aplus:signup' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Sign Up Free
+                    </a>
+                    <a href="{% url 'aplus:course_list' %}" class="btn btn-outline-light btn-lg ms-2">
+                        <i class="fas fa-book-open me-2"></i>Explore Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

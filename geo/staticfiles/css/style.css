@@ -1,0 +1,674 @@
+/*
+ * style.css
+ *
+ * This stylesheet defines the global styling for the Robert Sichomba / Perturbation Labs portfolio website.
+ * It uses a consistent dark grey and silver grey color palette for a modern and professional UI.
+ *
+ * Contents:
+ * 1. Global Variables (Color Palette)
+ * 2. Base Styles (Body, Headings, Links)
+ * 3. Scroll Animations
+ * 4. Navigation Bar
+ * 5. Hero Sections (General styling for landing/dashboard heroes)
+ * 6. Card Components (Service, Blog, Project Cards)
+ * 7. Video Section
+ * 8. Buttons
+ * 9. Form Elements (for Login, Signup, Contact)
+ * 10. Utility Elements (Back to Top, Dividers, Badges, Tags)
+ * 11. Footer
+ * 12. Responsive Design (Media Queries)
+ * 13. Django Messages Styling
+ *
+ * Consistency across pages is achieved by integrating all specific section styles here,
+ * and ensuring all HTML templates extend 'base.html' which links this stylesheet.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* 1. Global Variables (Color Palette: Dark Grey & Silver Grey) */
+/* -------------------------------------------------------------------------- */
+:root {
+    --dark-grey: #2C3E50;          /* Main Dark Grey - Primary elements, backgrounds */
+    --silver-grey: #ECF0F1;        /* Main Silver Grey - Light backgrounds, card backgrounds */
+    --accent-blue: #3498DB;        /* Vibrant Blue - Links, buttons, highlights */
+    --text-dark: #34495E;          /* Darker text on light backgrounds for readability */
+    --text-light: #F8F8F8;         /* Light text on dark backgrounds */
+    --border-light: rgba(0, 0, 0, 0.1); /* Light border color */
+    --shadow-light: rgba(0, 0, 0, 0.08); /* Light shadow for cards */
+    --shadow-dark: rgba(0, 0, 0, 0.3);   /* Darker shadow for pronounced elements */
+    --gradient-start: #2C3E50;     /* Gradient start for hero/auth sections */
+    --gradient-end: #1F2E3E;       /* Gradient end for hero/auth sections */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Base Styles */
+/* -------------------------------------------------------------------------- */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+    background-color: var(--silver-grey); /* Default page background */
+    padding-top: 5rem; /* Space for fixed navbar */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--dark-grey);
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #2980B9; /* Slightly darker blue on hover */
+    text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Scroll Animations (Apply to elements with data-animate attribute) */
+/* -------------------------------------------------------------------------- */
+[data-animate] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-animate].animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Navigation Bar */
+/* -------------------------------------------------------------------------- */
+.navbar {
+    background: rgba(255, 255, 255, 0.98); /* Light background with transparency */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    box-shadow: 0 2px 15px var(--shadow-light);
+    transition: background-color 0.3s ease;
+    z-index: 1020; /* Ensure navbar is above other content */
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--dark-grey) !important;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    position: relative;
+    margin: 0 1rem;
+    padding-bottom: 0.5rem; /* Space for the underline effect */
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background: var(--accent-blue);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after { /* Active state for current page */
+    width: 100%;
+}
+
+/* Adjustments for dark navbar if needed, e.g., on project pages, if background changes.
+   However, with a single style.css, it's better to make the navbar light globally. */
+
+/* -------------------------------------------------------------------------- */
+/* 5. Hero Sections (General Styles for landing pages) */
+/* -------------------------------------------------------------------------- */
+.hero {
+    background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.8)), /* Dark grey overlay */
+                url('https://source.unsplash.com/1920x600/?ai,technology') center/cover;
+    padding: 12rem 0 8rem;
+    color: var(--text-light); /* Light text on dark background */
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    color: var(--text-light); /* Ensure heading is light */
+}
+
+.hero .lead {
+    color: rgba(255, 255, 255, 0.8); /* Slightly less bright lead text */
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. Card Components (Service, Blog, Project, Testimonial Carousel Items) */
+/* -------------------------------------------------------------------------- */
+.service-card,
+.blog-card,
+.project-card,
+.carousel-item { /* Applies to testimonials as well */
+    background: white; /* Cards are generally white on silver-grey background */
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-light);
+    height: 100%; /* Ensures uniform height in grids */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px var(--shadow-light); /* Consistent shadow */
+}
+
+.service-card:hover,
+.blog-card:hover,
+.project-card:hover,
+.carousel-item:hover {
+    transform: translateY(-8px); /* Slightly less aggressive lift */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+.service-card {
+    align-items: center;
+    text-align: center;
+}
+
+.service-icon {
+    width: 70px;
+    height: 70px;
+    background: var(--accent-blue);
+    color: var(--text-light);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.blog-card img,
+.project-card img {
+    height: 220px;
+    object-fit: cover;
+    width: 100%;
+    border-top-left-radius: 1rem; /* Match card border radius */
+    border-top-right-radius: 1rem;
+    transition: transform 0.4s ease;
+}
+
+.blog-card:hover img,
+.project-card:hover img {
+    transform: scale(1.05);
+}
+
+.project-badge { /* Used for Featured/Latest on project cards */
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--accent-blue);
+    color: var(--text-light);
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.tech-tags { /* Used for project skills */
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.tech-tags span {
+    display: inline-block;
+    background: var(--silver-grey); /* Light tag background */
+    color: var(--dark-grey);
+    padding: 0.3rem 0.8rem;
+    margin: 0.2rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Testimonials specific styling (overrides some carousel-item defaults) */
+.testimonials .carousel-item {
+    padding: 3rem;
+}
+.testimonials .carousel-item p {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text-dark);
+}
+.testimonials .carousel-item h5 {
+    margin-top: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-grey);
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none; /* Remove Bootstrap's default icons */
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--accent-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+.carousel-control-prev-icon::before { content: "\f053"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: white; }
+.carousel-control-next-icon::before { content: "\f054"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: white; }
+
+
+/* -------------------------------------------------------------------------- */
+/* 7. Video Section */
+/* -------------------------------------------------------------------------- */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 20px var(--shadow-dark); /* Darker shadow for impact */
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. Buttons */
+/* -------------------------------------------------------------------------- */
+.btn-primary {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--text-light);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #2980B9; /* Darker accent blue */
+    border-color: #2980B9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.btn-outline-primary {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--accent-blue);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1.15rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-project { /* Specific style for project detail links */
+    background: var(--dark-grey);
+    color: var(--accent-blue);
+    padding: 10px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex; /* Use inline-flex for icon alignment */
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.btn-project:hover {
+    background: var(--accent-blue);
+    color: var(--text-light);
+    transform: scale(1.05);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 9. Form Elements (Login, Signup, Contact) */
+/* -------------------------------------------------------------------------- */
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark); /* Darker text for labels */
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 1px solid var(--border-light);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--silver-grey); /* Light background for inputs */
+    color: var(--text-dark);
+}
+
+.form-control:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); /* Accent blue shadow on focus */
+    background-color: white; /* White on focus for better contrast */
+}
+
+/* Specific styles for auth forms (login/signup) */
+.auth-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card,
+.login-card { /* Apply the same styles to both signup and login cards */
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px); /* Subtle blur effect */
+}
+
+.auth-card:hover,
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header,
+.login-card h2 {
+    border-bottom: 3px solid var(--accent-blue); /* Accent blue underline */
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--dark-grey);
+    font-weight: 700;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-blue);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: #2980B9;
+}
+
+.divider {
+    border-top: 1px solid var(--border-light);
+    position: relative;
+    margin: 2rem 0;
+}
+
+.divider-text {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 1rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.auth-footer p,
+.login-card p {
+    color: var(--text-dark);
+}
+
+.auth-footer a,
+.login-card a.forgot-password-link,
+.login-card a.signup-link {
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.auth-footer a:hover,
+.login-card a.forgot-password-link:hover,
+.login-card a.signup-link:hover {
+    color: #2980B9;
+    text-decoration: underline;
+}
+
+/* Error Handling for Forms */
+.is-invalid {
+    border-color: #E74C3C !important; /* Red for errors */
+}
+.invalid-feedback {
+    color: #E74C3C;
+    font-size: 0.85rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. Utility Elements (Back to Top, Badges, Tags) */
+/* -------------------------------------------------------------------------- */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: var(--accent-blue);
+    color: var(--text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.back-to-top.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 11. Footer */
+/* -------------------------------------------------------------------------- */
+footer {
+    background-color: var(--dark-grey); /* Dark grey footer */
+    color: var(--text-light);
+    padding: 2.5rem 0;
+    text-align: center;
+}
+
+footer .social-links a {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    margin: 0 0.75rem;
+    transition: color 0.3s ease;
+}
+
+footer .social-links a:hover {
+    color: var(--accent-blue); /* Accent on hover */
+}
+
+footer p {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+footer a {
+    color: rgba(255, 255, 255, 0.7); /* Lighter link color in footer */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 12. Responsive Design (Media Queries) */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 992px) { /* Medium devices (tablets, small desktops) */
+    .hero {
+        padding: 10rem 0 6rem;
+    }
+    .hero h1 {
+        font-size: 2.75rem;
+    }
+    .auth-card, .login-card {
+        margin: 0 1.5rem;
+    }
+    .form-control, .btn {
+        padding: 0.6rem 1rem;
+    }
+}
+
+@media (max-width: 768px) { /* Small devices (portrait tablets, large phones) */
+    body {
+        padding-top: 4rem; /* Adjust for smaller navbar on mobile */
+    }
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+    .nav-link {
+        margin: 0.5rem 0; /* Stack nav items vertically */
+    }
+    .hero {
+        padding: 8rem 0 4rem;
+    }
+    .hero h1 {
+        font-size: 2.25rem;
+    }
+    .service-card, .blog-card, .project-card, .carousel-item {
+        padding: 1.5rem;
+    }
+    .project-card img {
+        height: 180px;
+    }
+    .back-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    .auth-card .card-body, .login-card .card-body {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 576px) { /* Extra small devices (phones) */
+    .hero h1 {
+        font-size: 2rem;
+    }
+    .btn-lg {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+    .service-icon {
+        width: 60px;
+        height: 60px;
+    }
+    .filter-buttons {
+        gap: 0.5rem;
+        justify-content: flex-start; /* Align filters to left on tiny screens */
+        overflow-x: auto; /* Allow horizontal scrolling if many filters */
+        padding-bottom: 0.5rem; /* Space for scrollbar */
+        white-space: nowrap; /* Prevent wrapping */
+    }
+    .filter-btn {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+    .project-links .btn-project {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 13. Django Messages Styling (for messages.html include) */
+/* -------------------------------------------------------------------------- */
+.messages {
+    list-style: none;
+    padding: 1rem;
+    margin-top: 5rem; /* Space below fixed navbar */
+    margin-bottom: 0;
+    position: relative; /* Needed for z-index */
+    z-index: 1000; /* Ensure messages appear above content */
+}
+
+.messages li {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    line-height: 1.3;
+}
+
+.messages .alert-success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
+.messages .alert-info { background-color: #d1ecf1; color: #0c5460; border-color: #bee5eb; }
+.messages .alert-warning { background-color: #fff3cd; color: #856404; border-color: #ffeeba; }
+.messages .alert-error { /* Django uses 'error', Bootstrap uses 'danger' */
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+/* Ensure close button works correctly */
+.messages .btn-close {
+    color: inherit; /* Inherit color from parent for visibility */
+    opacity: 0.8;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    margin-left: 1rem;
+    padding: 0;
+}
+.messages .btn-close:hover {
+    opacity: 1;
+}

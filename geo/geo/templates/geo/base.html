@@ -1,0 +1,959 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{% block title %}Geo‑Junction | Geophysical Exploration Services{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Geo‑Junction provides world-class geophysical exploration, surveying, and mining consultancy services. Trusted by leading mining companies worldwide.{% endblock %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* ==============================================================
+           ROOT VARIABLES – Blue & Gold Theme (Enhanced)
+           ============================================================== */
+        :root {
+            --primary: #1a5276;
+            --primary-dark: #0a2a3f;
+            --primary-light: #2e86c1;
+            --primary-bg: #eaf2f8;
+            --accent: #f1c40f;
+            --accent-light: #f9e79f;
+            --accent-dark: #d4ac0d;
+            --white: #ffffff;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #94a2ad;
+            --gray-700: #828b95;
+            --gray-800: #b4d5f6;
+            --gray-900: #87a8c9;
+            --light-bg: #f0f7fb;
+            --card-shadow: 0 4px 24px rgba(26, 82, 118, 0.12);
+            --card-hover-shadow: 0 16px 56px rgba(26, 82, 118, 0.20);
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.30);
+            --glass-shadow: 0 8px 40px rgba(141, 163, 150, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ==============================================================
+           BODY – with Background Image & Overlay
+           ============================================================== */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-top: 76px;
+            min-height: 100vh;
+            color: var(--gray-800);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            /* ---- Background Image (replace URL with your own) ---- */
+            background-image: url('{% static "images/hero-bg.jpg" %}');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Dark overlay for readability & mood */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background:
+                /* subtle vignette + gradient overlay */
+                radial-gradient(ellipse at 30% 20%, rgba(10, 42, 63, 0.55) 0%, rgba(10, 42, 63, 0.85) 100%),
+                linear-gradient(180deg, rgba(10, 42, 63, 0.40) 0%, rgba(10, 42, 63, 0.70) 100%);
+            pointer-events: none;
+        }
+
+        /* All content sits above the overlay */
+        main,
+        .navbar,
+        .site-footer,
+        .bottom-nav {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---- Glassmorphism Card Base ---- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 0 12px 56px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+        }
+
+        /* ---- Section Backgrounds (semi-transparent) ---- */
+        .section-glass {
+            background: rgba(255, 255, 255, 0.60);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .section-glass-dark {
+            background: rgba(10, 42, 63, 0.70);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-top: 1px solid rgba(241, 196, 15, 0.10);
+            border-bottom: 1px solid rgba(241, 196, 15, 0.10);
+            color: var(--gray-100);
+        }
+
+        .section-glass-dark h1,
+        .section-glass-dark h2,
+        .section-glass-dark h3,
+        .section-glass-dark h4,
+        .section-glass-dark h5,
+        .section-glass-dark .text-dark {
+            color: var(--white) !important;
+        }
+        .section-glass-dark .text-muted {
+            color: rgba(255, 255, 255, 0.70) !important;
+        }
+
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        /* ==============================================================
+           NAVBAR – Enhanced with glass effect
+           ============================================================== */
+        .navbar {
+            background: rgba(10, 42, 63, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+            padding: 0.5rem 0;
+            min-height: 76px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.12);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0;
+        }
+
+        .navbar-brand img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .navbar-brand .brand-text {
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            color: white;
+        }
+
+        .navbar-brand .brand-text .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .navbar-brand .brand-sub {
+            font-size: 0.55rem;
+            font-weight: 400;
+            color: var(--gray-500);
+            letter-spacing: 1px;
+            margin-left: 4px;
+            -webkit-text-fill-color: var(--gray-500);
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .navbar-dark .navbar-nav .nav-link i {
+            margin-right: 6px;
+            width: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover,
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .navbar-dark .navbar-nav .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .navbar-dark .navbar-nav .nav-link.btn-gold {
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 700;
+            padding: 0.5rem 1.8rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(241, 196, 15, 0.30);
+        }
+
+        .navbar-dark .navbar-nav .nav-link.btn-gold:hover {
+            background: var(--accent-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(241, 196, 15, 0.40);
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-dark .navbar-nav .nav-link {
+                padding: 0.8rem 1rem;
+            }
+            .navbar-dark .navbar-nav .nav-link.btn-gold {
+                background: transparent;
+                color: rgba(255, 255, 255, 0.85);
+                padding: 0.8rem 1rem;
+                box-shadow: none;
+                border-radius: var(--radius-sm);
+                text-align: left;
+                width: 100%;
+            }
+            .navbar-dark .navbar-nav .nav-link.btn-gold:hover {
+                background: rgba(255, 255, 255, 0.08);
+                color: var(--accent);
+                transform: none;
+                box-shadow: none;
+            }
+            .navbar-dark .navbar-nav .nav-link.active::after {
+                display: none;
+            }
+            .dropdown-menu {
+                background: rgba(255, 255, 255, 0.06);
+                border: none;
+                box-shadow: none;
+                padding-left: 1.5rem;
+                margin-top: 0;
+                border-radius: 0;
+            }
+            .dropdown-item {
+                color: rgba(255, 255, 255, 0.85) !important;
+                padding: 0.6rem 0.8rem;
+            }
+            .dropdown-item i {
+                background: rgba(255, 255, 255, 0.08);
+                color: var(--accent);
+            }
+        }
+
+        /* ==============================================================
+           MOBILE BOTTOM NAV – Glass
+           ============================================================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 42, 63, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.35);
+            display: none;
+            z-index: 1040;
+            padding: 8px 0 env(safe-area-inset-bottom, 8px);
+            border-top: 1px solid rgba(241, 196, 15, 0.10);
+        }
+
+        .bottom-nav .nav-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .bottom-nav .nav-link {
+            color: rgba(255, 255, 255, 0.60);
+            font-size: 0.55rem;
+            font-weight: 500;
+            padding: 4px 0;
+            transition: var(--transition);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .bottom-nav .nav-link i {
+            font-size: 1.4rem;
+            transition: var(--transition);
+            color: var(--accent);
+        }
+
+        .bottom-nav .nav-link span {
+            font-size: 0.5rem;
+            letter-spacing: 0.3px;
+            color: rgba(255, 255, 255, 0.60);
+        }
+
+        .bottom-nav .nav-link.active,
+        .bottom-nav .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .bottom-nav .nav-link.active i,
+        .bottom-nav .nav-link:hover i {
+            transform: translateY(-2px);
+            color: var(--accent);
+        }
+
+        .bottom-nav .nav-link.active span,
+        .bottom-nav .nav-link:hover span {
+            color: var(--accent);
+        }
+
+        @media (max-width: 767.98px) {
+            body {
+                padding-bottom: 76px;
+            }
+            .bottom-nav {
+                display: flex;
+            }
+        }
+
+        /* ==============================================================
+           BACK TO TOP – Glowing
+           ============================================================== */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1030;
+            box-shadow: 0 4px 24px rgba(26, 82, 118, 0.45);
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .back-to-top:hover {
+            background: var(--accent);
+            color: var(--primary-dark);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 40px rgba(241, 196, 15, 0.40);
+        }
+
+        @media (max-width: 767.98px) {
+            .back-to-top {
+                bottom: 88px;
+                right: 16px;
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+            }
+        }
+
+        /* ==============================================================
+           FOOTER – Glass Dark
+           ============================================================== */
+        .site-footer {
+            background: rgba(10, 42, 63, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--gray-400);
+            padding: 3.5rem 0 1.5rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(241, 196, 15, 0.08);
+        }
+
+        .site-footer h5,
+        .site-footer h6 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+
+        .site-footer a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .site-footer a:hover {
+            color: var(--accent);
+        }
+
+        .site-footer .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--gray-400);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            margin-right: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .site-footer .social-links a:hover {
+            background: var(--accent);
+            color: var(--primary-dark);
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .footer-links a {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .footer-links {
+                gap: 1rem;
+            }
+            .footer-links a {
+                font-size: 0.8rem;
+            }
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .footer-bottom a {
+            color: var(--gray-400);
+        }
+        .footer-bottom a:hover {
+            color: var(--accent);
+        }
+
+        /* ==============================================================
+           UTILITY CLASSES
+           ============================================================== */
+        .bg-primary-soft {
+            background: var(--primary-bg);
+        }
+
+        .section-padding {
+            padding: 5rem 0;
+        }
+
+        @media (max-width: 767.98px) {
+            .section-padding {
+                padding: 3rem 0;
+            }
+        }
+
+        .hover-lift {
+            transition: var(--transition);
+        }
+        .hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--card-hover-shadow) !important;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .text-accent {
+            color: var(--accent);
+        }
+        .text-accent-light {
+            color: var(--accent-light);
+        }
+
+        /* ---- Card enhancements ---- */
+        .card {
+            border: none;
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            background: var(--glass-bg);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .card .card-img-top {
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        /* ---- Buttons ---- */
+        .btn-gold {
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 700;
+            padding: 0.65rem 2rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            border: none;
+            box-shadow: 0 4px 20px rgba(241, 196, 15, 0.30);
+        }
+
+        .btn-gold:hover {
+            background: var(--accent-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 36px rgba(241, 196, 15, 0.40);
+        }
+
+        .btn-outline-gold {
+            background: transparent;
+            color: var(--accent);
+            font-weight: 600;
+            padding: 0.65rem 2rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-outline-gold:hover {
+            background: var(--accent);
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(241, 196, 15, 0.25);
+        }
+
+        /* ---- Section title with accent line ---- */
+        .section-title {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 56px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .section-title.text-center::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* ---- Alert messages (glass) ---- */
+        .alert {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* ==============================================================
+           RESPONSIVE TWEAKS
+           ============================================================== */
+        @media (max-width: 576px) {
+            .section-padding {
+                padding: 2rem 0;
+            }
+            .navbar-brand .brand-text {
+                font-size: 1.2rem;
+            }
+            .navbar-brand img {
+                height: 34px;
+            }
+            .container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        /* ---- Optional: subtle animated grain texture ---- */
+        @keyframes grain {
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+            10% {
+                transform: translate(-2%, -1%);
+            }
+            20% {
+                transform: translate(1%, -2%);
+            }
+            30% {
+                transform: translate(-1%, 2%);
+            }
+            40% {
+                transform: translate(2%, 1%);
+            }
+            50% {
+                transform: translate(-1%, -1%);
+            }
+            60% {
+                transform: translate(1%, 2%);
+            }
+            70% {
+                transform: translate(-2%, 1%);
+            }
+            80% {
+                transform: translate(2%, -1%);
+            }
+            90% {
+                transform: translate(-1%, -2%);
+            }
+        }
+
+        /* Optional subtle grain overlay (disabled by default – uncomment to enable) */
+        /*
+        body::after {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: -1;
+          pointer-events: none;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+          background-size: 256px 256px;
+          opacity: 0.3;
+          animation: grain 8s steps(2) infinite;
+        }
+        */
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- ==============================================================
+    NAVBAR
+    ============================================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'geo:home' %}">
+                <img src="{% static 'images/logo.jpg' %}" alt="Geo‑J" class="d-inline-block align-text-top">
+                <span class="brand-text">
+                    <span class="highlight">Geo</span>-J
+                    <small class="brand-sub"></small>
+                </span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'geo:home' %}"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'geo:about' %}"><i class="fas fa-info-circle"></i> About</a></li>
+                <li class="nav-item"><a class="nav-link {% if 'service' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'geo:service_list' %}"><i class="fas fa-cogs"></i> Services</a></li>
+                <li class="nav-item"><a class="nav-link {% if 'project' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'geo:project_list' %}"><i class="fas fa-bullseye"></i> Projects</a></li>
+                <li class="nav-item"><a class="nav-link {% if 'news' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'geo:news_list' %}"><i class="fas fa-newspaper"></i> News</a></li>
+                <li class="nav-item"><a class="nav-link {% if 'job' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'geo:job_list' %}"><i class="fas fa-briefcase"></i> Careers</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'geo:contact' %}"><i class="fas fa-envelope"></i> Contact</a></li>
+
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i> {{ user.get_full_name|default:user.email|truncatechars:12 }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'geo:profile' %}"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="{% url 'geo:logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}" href="{% url 'geo:login' %}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <li class="nav-item"><a class="nav-link btn-gold" href="{% url 'geo:register' %}"><i class="fas fa-user-plus"></i> Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ==============================================================
+MESSAGES – Glass style
+============================================================== -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ==============================================================
+MAIN CONTENT
+============================================================== -->
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ==============================================================
+MOBILE BOTTOM NAVIGATION
+============================================================== -->
+<nav class="bottom-nav">
+    <div class="nav-item">
+        <a href="{% url 'geo:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'geo:service_list' %}" class="nav-link {% if 'service' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="fas fa-cogs"></i><span>Services</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'geo:project_list' %}" class="nav-link">
+            <i class="fas fa-bullseye"></i><span>Projects</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% url 'geo:news_list' %}" class="nav-link">
+            <i class="fas fa-newspaper"></i><span>News</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="{% if user.is_authenticated %}{% url 'geo:profile' %}{% else %}{% url 'geo:login' %}{% endif %}" class="nav-link">
+            <i class="fas fa-user"></i><span>Account</span>
+        </a>
+    </div>
+</nav>
+
+<!-- ==============================================================
+BACK TO TOP BUTTON
+============================================================== -->
+<button id="backToTopBtn" class="back-to-top" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- ==============================================================
+FOOTER – Glass Dark
+============================================================== -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Brand -->
+            <div class="col-lg-4 col-md-6">
+                <h5>
+                    <i class="fas fa-globe-africa text-accent me-2"></i>
+                    <span class="text-white">Geo</span><span class="text-accent">Junction</span>
+                </h5>
+                <p class="text-muted small">
+                    World-class geophysical exploration, surveying, and mining consultancy services.
+                    Trusted by leading mining companies across Africa and beyond.
+                </p>
+                <div class="social-links mt-3">
+                    <a href="#" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6">
+                <h6>Company</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'geo:about' %}">About Us</a></li>
+                    <li class="mb-2"><a href="{% url 'geo:service_list' %}">Services</a></li>
+                    <li class="mb-2"><a href="{% url 'geo:project_list' %}">Projects</a></li>
+                    <li><a href="{% url 'geo:contact' %}">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="col-lg-2 col-md-6">
+                <h6>Resources</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'geo:document_list' %}">Documents</a></li>
+                    <li class="mb-2"><a href="{% url 'geo:report_list' %}">Reports</a></li>
+                    <li class="mb-2"><a href="{% url 'geo:gallery_list' %}">Gallery</a></li>
+                    <li><a href="{% url 'geo:faq_list' %}">FAQs</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-lg-4 col-md-6">
+                <h6>Get in Touch</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fas fa-map-marker-alt text-accent me-3 mt-1"></i>
+                        <div>
+                            <div class="text-white-50 small">Head Office</div>
+                            <span class="text-muted small">123 Exploration Avenue, Lusaka, Zambia</span>
+                        </div>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="fas fa-phone text-accent me-3 mt-1"></i>
+                        <div>
+                            <div class="text-white-50 small">Phone</div>
+                            <a href="tel:+260970000000" class="text-muted small">+260 97 000 0000</a>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start">
+                        <i class="fas fa-envelope text-accent me-3 mt-1"></i>
+                        <div>
+                            <div class="text-white-50 small">Email</div>
+                            <a href="mailto:info@geojunction.com" class="text-muted small">info@geojunction.com</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="footer-bottom text-center">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-md-start text-center">
+                    <p class="mb-0 small">&copy; {% now "Y" %} Geo‑Junction. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end text-center">
+                    <a href="{% url 'geo:policy_list' %}" class="me-3 small">Privacy Policy</a>
+                    <a href="{% url 'geo:policy_list' %}" class="small">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ==============================================================
+SCRIPTS
+============================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Back to Top
+        const backToTop = document.getElementById('backToTopBtn');
+        window.addEventListener('scroll', function() {
+            backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
+        });
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Close mobile navbar on link click
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        if (navbarCollapse) {
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                        new bootstrap.Collapse(navbarCollapse).hide();
+                    }
+                });
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    const navbarHeight = 76;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset -
+                        navbarHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+    });
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

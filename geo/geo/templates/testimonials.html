@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Testimonials - What Clients Say About Robert Sichomba{% endblock title %}
+
+{% block meta_description %}Read testimonials from satisfied clients of Robert Sichomba, highlighting successful collaborations in data analysis, machine learning, web development, and educational software.{% endblock meta_description %}
+
+{# No extra_head or extra_js needed here, as global styles/scripts handle most functionality #}
+
+{% block content %}
+    {# Hero Section for Testimonials #}
+    <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
+        <div class="container" data-animate>
+            <h1 class="display-3 fw-bold mb-3">Client Success Stories</h1>
+            <p class="lead mb-4 col-lg-8 mx-auto">
+                Hear directly from those I've collaborated with. Their success is my greatest reward.
+            </p>
+        </div>
+    </section>
+
+    {# Testimonials Grid Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Voices of Trust</h2>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {# Loop through testimonials here (example static testimonials below) #}
+                {% for testimonial in testimonials %} {# Assuming 'testimonials' is passed from your Django view #}
+                <div class="col">
+                    <div class="testimonial-card h-100 d-flex flex-column text-center"> {# Reusing service-card styling, but renaming for clarity #}
+                        {% if testimonial.image %} {# Optional: if you have client/company logos #}
+                            <img src="{% static testimonial.image %}" alt="{{ testimonial.client_name }}'s logo" class="img-fluid rounded-circle mb-3 mx-auto" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="service-icon mx-auto mb-3"><i class="fas fa-quote-right"></i></div>
+                        {% endif %}
+                        <p class="testimonial-quote mb-4">"{{ testimonial.quote }}"</p>
+                        <h5 class="fw-bold mt-auto pt-3">- {{ testimonial.client_name }}</h5>
+                        {% if testimonial.client_title %}
+                            <p class="text-muted">{{ testimonial.client_title }}</p>
+                        {% endif %}
+                        {% if testimonial.project_link %}
+                            <a href="{{ testimonial.project_link }}" class="text-decoration-none mt-2">View Project <i class="fas fa-external-link-alt ms-1"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="lead">No testimonials found yet. Be the first to share your experience!</p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary mt-3">Provide a Testimonial <i class="fas fa-pen-fancy ms-2"></i></a>
+                </div>
+                {% endfor %}
+
+                {# Static Examples (Remove/Replace with Django loop later) #}
+                {#
+                <div class="col">
+                    <div class="testimonial-card h-100 d-flex flex-column text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-quote-right"></i></div>
+                        <p class="testimonial-quote mb-4">"Robert's insights on our data analytics project were invaluable. The deliverables were professional, accurate, and truly helped us make informed decisions. Highly recommended!"</p>
+                        <h5 class="fw-bold mt-auto pt-3">- Thabo M.</h5>
+                        <p class="text-muted">CEO, Tech Innovations Ltd.</p>
+                        <a href="{% url 'project_detail' 'some-project-slug-1' %}" class="text-decoration-none mt-2">View Related Project <i class="fas fa-external-link-alt ms-1"></i></a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="testimonial-card h-100 d-flex flex-column text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-quote-right"></i></div>
+                        <p class="testimonial-quote mb-4">"The educational software developed by Robert is a game-changer. It's intuitive, robust, and significantly improved our students' engagement and learning outcomes."</p>
+                        <h5 class="fw-bold mt-auto pt-3">- Dr. Lungu P.</h5>
+                        <p class="text-muted">Head of Academics, Future Minds Institute</p>
+                        <a href="{% url 'project_detail' 'some-project-slug-2' %}" class="text-decoration-none mt-2">View Related Project <i class="fas fa-external-link-alt ms-1"></i></a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="testimonial-card h-100 d-flex flex-column text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-quote-right"></i></div>
+                        <p class="testimonial-quote mb-4">"Our new web application is exactly what we envisioned, and more! Robert's attention to detail and commitment to quality made the development process seamless."</p>
+                        <h5 class="fw-bold mt-auto pt-3">- Mwansa K.</h5>
+                        <p class="text-muted">Founder, Startup Connect</p>
+                        <a href="{% url 'project_detail' 'some-project-slug-3' %}" class="text-decoration-none mt-2">View Related Project <i class="fas fa-external-link-alt ms-1"></i></a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="testimonial-card h-100 d-flex flex-column text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-quote-right"></i></div>
+                        <p class="testimonial-quote mb-4">"Working with Robert was a pleasure. He understood our needs perfectly and delivered a data solution that exceeded our expectations in terms of both performance and usability."</p>
+                        <h5 class="fw-bold mt-auto pt-3">- Nchimunya L.</h5>
+                        <p class="text-muted">Operations Manager, ZED Analytics</p>
+                    </div>
+                </div>
+                #}
+            </div>
+        </div>
+    </section>
+
+    {# Call to Action / About Me Snippet #}
+    <section class="py-5 bg-dark text-white text-center" data-animate>
+        <div class="container my-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-4">Ready to Be My Next Success Story?</h2>
+                <p class="lead mb-4">
+                    I'm committed to delivering exceptional results that help my clients achieve their goals. Let's start a conversation about how I can contribute to your success.
+                </p>
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Get a Quote <i class="fas fa-handshake ms-2"></i></a>
+                <a href="{% url 'projects_list' %}" class="btn btn-outline-light btn-lg">Explore My Projects <i class="fas fa-clipboard-list ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

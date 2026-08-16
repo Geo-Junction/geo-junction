@@ -1,0 +1,327 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:category.name|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Explore "|add:category.name|add:" services offered by Geo‑Junction for geophysical exploration." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       SERVICES CATEGORY PAGE – Additional styles
+       ============================================================== */
+    .category-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .category-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/category-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .category-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .category-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .category-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .category-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+        justify-content: center;
+    }
+    .category-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .category-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .category-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    /* Service card – glass */
+    .service-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 2rem 1.5rem;
+        height: 100%;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .service-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .service-card:hover::after {
+        opacity: 1;
+    }
+    .service-card .service-icon {
+        width: 68px;
+        height: 68px;
+        background: rgba(26, 82, 118, 0.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: var(--primary);
+        font-size: 2rem;
+        transition: var(--transition);
+        border: 1px solid rgba(26, 82, 118, 0.1);
+    }
+    .service-card:hover .service-icon {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.08);
+        border-color: var(--primary);
+    }
+    .service-card h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .service-card p {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+    }
+    .service-card .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        border-radius: 50px;
+        padding: 0.4rem 1.5rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .service-card .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26, 82, 118, 0.2);
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    @media (max-width: 767.98px) {
+        .category-hero h1 {
+            font-size: 2rem;
+        }
+        .service-card {
+            padding: 1.5rem 1rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="category-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:service_list' %}">Services</a></li>
+                    <li class="breadcrumb-item active">{{ category.name }}</li>
+                </ol>
+            </nav>
+            <h1><span class="highlight">{{ category.name }}</span></h1>
+            <p class="lead text-white-50">{{ category.description|default:"All services in this category." }}</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Services
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# SERVICES GRID #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                {% for service in page_obj %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas {{ service.icon|default:'fa-cog' }}"></i></div>
+                            <h5>{{ service.name }}</h5>
+                            <p>{{ service.short_description|truncatechars:100 }}</p>
+                            <a href="{% url 'geo:service_detail' slug=service.slug %}" class="btn btn-outline-primary btn-sm mt-2">Details <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-cogs fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No services in this category</h4>
+                        <p class="text-muted">Check back later or explore other service categories.</p>
+                        <a href="{% url 'geo:service_list' %}" class="btn btn-outline-primary mt-3">View All Services</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Service category pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Looking for Something Specific?</h2>
+            <p class="lead opacity-75">Contact us to discuss your unique exploration needs.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-list me-1"></i> All Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

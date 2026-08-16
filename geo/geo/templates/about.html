@@ -1,0 +1,103 @@
+{% extends 'base.html' %} {# <--- This MUST be the first line #}
+{% load static %}         {# <--- This comes AFTER extends #}
+
+
+{% block title %}About Me - Robert Sichomba{% endblock title %}
+
+{% block meta_description %}Learn more about Robert Sichomba, a passionate data analyst, machine learning engineer, and web developer based in Zambia. Discover his expertise, journey, and interests.{% endblock meta_description %}
+
+{# No need for {% block extra_head %} or {% block extra_js %} if there's no page-specific CSS/JS #}
+
+{% block content %}
+<!-- Test Image for Debugging -->
+<div style="margin: 20px;">
+    <img src="{% static 'images/robert_sichomba_profile.jpg' %}" alt="Test Image" style="border: 2px solid red; max-width: 200px;">
+</div>
+
+<section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
+    <div class="container" data-animate>
+        <h1 class="display-3 fw-bold mb-3">About Robert Sichomba</h1>
+        <p class="lead mb-4 col-lg-8 mx-auto">
+            My journey through the world of technology, data, and education.
+        </p>
+    </div>
+</section>
+
+<section class="py-5" data-animate>
+    <div class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="{% static 'images/robert_sichomba_profile.jpg' %}" alt="Robert Sichomba Profile" class="img-fluid rounded-4 shadow-lg">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">My Professional Journey & Expertise</h2>
+                <p>
+                    I'm **Robert Sichomba**, a dedicated and innovative professional based in Zambia, deeply passionate about harnessing the power of **data** and **technology** to solve real-world problems. My expertise spans a diverse range of fields including:
+                </p>
+                <ul class="list-unstyled mb-4">
+                    <li><i class="fas fa-check-circle text-success me-2"></i> **Data Analysis & Visualization**: Transforming complex datasets into actionable insights with compelling visual narratives.</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i> **Machine Learning & AI**: Developing intelligent models that learn from data to make predictions and automate processes.</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i> **Web Development**: Crafting responsive, efficient, and user-friendly web applications using modern frameworks.</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i> **Educational Software Development**: Creating intuitive and engaging tools that enhance learning experiences.</li>
+                </ul>
+                <p>
+                    My journey has been defined by a continuous pursuit of knowledge and a commitment to practical application. I thrive on challenges that demand a blend of analytical rigor, creative problem-solving, and robust technical implementation.
+                </p>
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg mt-3">Let's Connect <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-5">
+    <div class="container my-5" data-animate>
+        <h2 class="text-center fw-bold mb-5">Beyond the Code: My Interests & Philosophy</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="p-4 rounded-4 shadow-sm h-100 service-card text-start"> {# Reusing service-card for consistent styling #}
+                    <div class="service-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h4 class="fw-bold">Continuous Learning</h4>
+                    <p>
+                        The tech landscape evolves rapidly, and I believe in staying at the forefront. I'm constantly exploring new technologies, frameworks, and methodologies to expand my skill set and deliver cutting-edge solutions.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="p-4 rounded-4 shadow-sm h-100 service-card text-start"> {# Reusing service-card for consistent styling #}
+                    <div class="service-icon"><i class="fas fa-people-arrows"></i></div>
+                    <h4 class="fw-bold">Impact & Community</h4>
+                    <p>
+                        My work is driven by a desire to create a positive impact. Whether it's optimizing business processes, contributing to educational growth, or simplifying complex data, I aim to build solutions that genuinely make a difference. I also believe in sharing knowledge and contributing to the tech community.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <p class="lead">Interested in seeing my work firsthand?</p>
+            <a href="{% url 'projects_list' %}" class="btn btn-outline-primary btn-lg">Explore My Projects <i class="fas fa-long-arrow-alt-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" data-animate>
+    <div class="container my-5">
+        <h2 class="text-center fw-bold mb-5">Where I Come From</h2>
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <p>
+                    I'm proud to be based in **Zambia**, a country brimming with potential and a vibrant tech community. My background gives me a unique perspective on local challenges and opportunities, which often inspires my projects and solutions.
+                </p>
+                <p>
+                    I believe in fostering local talent and contributing to the digital transformation efforts within Zambia and beyond. My work is not just about code and data; it's about building bridges and empowering communities through technology.
+                </p>
+                <p>
+                    If you're in Zambia and looking to collaborate or simply discuss technology, feel free to reach out!
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/zambia_map.jpg' %}" alt="Map of Zambia" class="img-fluid rounded-4 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

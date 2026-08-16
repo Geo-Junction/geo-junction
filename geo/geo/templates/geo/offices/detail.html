@@ -1,0 +1,407 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:office.name|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Contact Geo‑Junction's "|add:office.name|add:" office for geophysical exploration services." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       OFFICE DETAIL – Additional styles
+       ============================================================== */
+    .detail-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .detail-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/office-detail-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .detail-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .detail-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .detail-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .detail-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .detail-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .detail-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .detail-hero .meta {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.95rem;
+    }
+    .detail-hero .badge-hq {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 0.3rem 1rem;
+    }
+
+    /* Office info – glass */
+    .office-info {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+    }
+    .office-info .info-row {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        padding: 0.75rem 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .office-info .info-row:last-child {
+        border-bottom: none;
+    }
+    .office-info .info-row i {
+        font-size: 1.2rem;
+        color: var(--primary);
+        width: 1.5rem;
+        text-align: center;
+        margin-top: 0.1rem;
+    }
+    .office-info .info-row strong {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        font-weight: 600;
+    }
+    .office-info .info-row div {
+        flex: 1;
+    }
+
+    /* Sidebar – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-card h6 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .sidebar-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .sidebar-card ul li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .sidebar-card ul li:last-child {
+        border-bottom: none;
+    }
+    .sidebar-card ul li .label {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+    }
+    .sidebar-card ul li .value {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .map-container {
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .map-container iframe {
+        width: 100%;
+        height: 350px;
+        border: 0;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .detail-hero h1 {
+            font-size: 2rem;
+        }
+        .office-info .info-row {
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .office-info .info-row i {
+            margin-top: 0;
+        }
+        .map-container iframe {
+            height: 250px;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="detail-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:office_list' %}">Offices</a></li>
+                    <li class="breadcrumb-item active">{{ office.name|truncatechars:50 }}</li>
+                </ol>
+            </nav>
+            <h1>{{ office.name }}</h1>
+            <div class="meta d-flex flex-wrap align-items-center gap-3">
+                <span><i class="fas fa-map-pin me-1"></i> {{ office.address|truncatechars:60 }}</span>
+                {% if office.is_headquarters %}
+                    <span class="badge-hq"><i class="fas fa-star me-1"></i> Headquarters</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:office_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Offices
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# OFFICE DETAILS #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main content #}
+                <div class="col-lg-8">
+                    {% if office.image %}
+                        <img src="{{ office.image.url }}" alt="{{ office.name }}" class="img-fluid rounded-4 mb-4" style="width:100%; max-height:400px; object-fit:cover; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+                    {% endif %}
+
+                    <div class="office-info">
+                        <div class="info-row">
+                            <i class="fas fa-map-pin"></i>
+                            <div>
+                                <strong>Address</strong>
+                                <p class="mb-0">{{ office.address|linebreaks }}</p>
+                            </div>
+                        </div>
+                        {% if office.phone %}
+                            <div class="info-row">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <strong>Phone</strong>
+                                    <p class="mb-0"><a href="tel:{{ office.phone }}">{{ office.phone }}</a></p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if office.email %}
+                            <div class="info-row">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>Email</strong>
+                                    <p class="mb-0"><a href="mailto:{{ office.email }}">{{ office.email }}</a></p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if office.is_headquarters %}
+                            <div class="info-row">
+                                <i class="fas fa-star text-accent"></i>
+                                <div>
+                                    <strong>Status</strong>
+                                    <p class="mb-0"><span class="badge bg-warning text-dark">Global Headquarters</span></p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Map #}
+                    {% if office.map_embed %}
+                        <div class="map-container mt-4">
+                            {{ office.map_embed|safe }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-4">
+                    <div class="sidebar-card">
+                        <h6><i class="fas fa-info-circle text-primary me-2"></i> Office Info</h6>
+                        <ul>
+                            <li>
+                                <span class="label">Name</span>
+                                <span class="value">{{ office.name }}</span>
+                            </li>
+                            <li>
+                                <span class="label">Location</span>
+                                <span class="value">{{ office.address|truncatechars:40 }}</span>
+                            </li>
+                            {% if office.phone %}
+                                <li>
+                                    <span class="label">Phone</span>
+                                    <span class="value">{{ office.phone }}</span>
+                                </li>
+                            {% endif %}
+                            {% if office.email %}
+                                <li>
+                                    <span class="label">Email</span>
+                                    <span class="value">{{ office.email }}</span>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <span class="label">Headquarters</span>
+                                <span class="value">{% if office.is_headquarters %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</span>
+                            </li>
+                        </ul>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-primary w-100 mt-2">
+                            <i class="fas fa-envelope me-2"></i> Contact This Office
+                        </a>
+                    </div>
+
+                    {# Other offices #}
+                    {% if other_offices %}
+                        <div class="sidebar-card">
+                            <h6><i class="fas fa-building text-primary me-2"></i> Other Offices</h6>
+                            <ul>
+                                {% for other in other_offices|slice:":5" %}
+                                    <li>
+                                        <a href="{% url 'geo:office_detail' slug=other.slug %}" class="text-decoration-none">{{ other.name }}</a>
+                                        {% if other.is_headquarters %}
+                                            <span class="badge bg-warning text-dark ms-1">HQ</span>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <a href="{% url 'geo:office_list' %}" class="btn btn-sm btn-outline-secondary w-100 mt-2">
+                                <i class="fas fa-arrow-right me-1"></i> View All Offices
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {# Quick contact #}
+                    <div class="sidebar-card" style="background: var(--primary) !important; border-color: var(--primary);">
+                        <h6 class="text-white"><i class="fas fa-phone me-2"></i> Need Assistance?</h6>
+                        <p class="text-white-50 small">Our team is ready to help with your exploration needs.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Visit Our <span class="text-accent">Global</span> Offices</h2>
+            <p class="lead opacity-75">Find the nearest Geo‑Junction office to you.</p>
+            <a href="{% url 'geo:office_list' %}" class="btn btn-cta mt-3"><i class="fas fa-map-marked-alt me-2"></i> All Offices</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:office_list' %}" class="text-muted small"><i class="fas fa-building me-1"></i> Offices</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

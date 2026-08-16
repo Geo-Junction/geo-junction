@@ -1,0 +1,364 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:study.title|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:study.challenge|truncatechars:160 }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       CASE STUDY DETAIL – Additional styles
+       ============================================================== */
+    .study-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .study-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/study-detail-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .study-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .study-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .study-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .study-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .study-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .study-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .study-hero .meta {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.95rem;
+    }
+    .study-hero .meta .badge {
+        font-size: 0.75rem;
+    }
+
+    /* Content */
+    .study-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: var(--gray-700);
+    }
+    .study-content h3 {
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-top: 1.5rem;
+    }
+    .study-content .section-icon {
+        font-size: 1.8rem;
+        color: var(--primary);
+        width: 2.5rem;
+        text-align: center;
+    }
+    .study-content blockquote {
+        border-left: 4px solid var(--accent);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        color: var(--gray-600);
+        font-style: italic;
+    }
+    .study-content img {
+        max-width: 100%;
+        border-radius: var(--radius);
+        margin: 1.5rem 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    /* Result box – glass */
+    .result-box {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-left: 4px solid var(--accent);
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.04));
+    }
+    .result-box h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+
+    /* Sidebar – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+    .sidebar-card:hover {
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    }
+    .sidebar-card h6 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .sidebar-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .sidebar-card ul li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .sidebar-card ul li:last-child {
+        border-bottom: none;
+    }
+    .sidebar-card ul li a {
+        text-decoration: none;
+        color: var(--primary);
+        transition: var(--transition);
+    }
+    .sidebar-card ul li a:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .study-hero h1 {
+            font-size: 2rem;
+        }
+        .study-content {
+            font-size: 0.95rem;
+        }
+        .study-content .section-icon {
+            font-size: 1.4rem;
+            width: 2rem;
+        }
+        .sidebar-card {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="study-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:case_study_list' %}">Case Studies</a></li>
+                    <li class="breadcrumb-item active">{{ study.title|truncatechars:50 }}</li>
+                </ol>
+            </nav>
+            <h1>{{ study.title }}</h1>
+            <div class="meta">
+                <span><i class="fas fa-user me-1"></i> Client: {{ study.client_name|default:"Confidential" }}</span>
+                {% if study.project %}
+                    <span class="ms-3"><i class="fas fa-bullseye me-1"></i> Project: <a href="{% url 'geo:project_detail' slug=study.project.slug %}" class="text-white-50 text-decoration-none">{{ study.project.title }}</a></span>
+                {% endif %}
+                <span class="ms-3"><i class="far fa-calendar-alt me-1"></i> {{ study.publish_at|date:"F d, Y"|default:"N/A" }}</span>
+                {% if study.is_featured %}
+                    <span class="badge bg-warning text-dark ms-2"><i class="fas fa-star me-1"></i> Featured</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:case_study_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Case Studies
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# CONTENT #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main content #}
+                <div class="col-lg-8">
+                    <div class="study-content">
+                        {% if study.featured_image %}
+                            <img src="{{ study.featured_image.url }}" alt="{{ study.title }}" class="img-fluid rounded-4">
+                        {% endif %}
+
+                        <!-- Challenge -->
+                        <h3><span class="section-icon"><i class="fas fa-exclamation-triangle"></i></span> The Challenge</h3>
+                        {{ study.challenge|safe }}
+
+                        <!-- Solution -->
+                        <h3><span class="section-icon"><i class="fas fa-lightbulb"></i></span> The Solution</h3>
+                        {{ study.solution|safe }}
+
+                        <!-- Result -->
+                        <h3><span class="section-icon"><i class="fas fa-trophy"></i></span> The Result</h3>
+                        <div class="result-box">
+                            {{ study.result|safe }}
+                        </div>
+                    </div>
+
+                    {# Navigation buttons #}
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        <a href="{% url 'geo:case_study_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> All Case Studies
+                        </a>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-primary">
+                            <i class="fas fa-envelope me-1"></i> Discuss Your Project
+                        </a>
+                    </div>
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-4">
+                    <div class="sidebar-card">
+                        <h6><i class="fas fa-info-circle text-primary me-2"></i> Quick Info</h6>
+                        <ul>
+                            <li><strong>Client:</strong> {{ study.client_name|default:"Confidential" }}</li>
+                            {% if study.project %}
+                                <li><strong>Project:</strong> <a href="{% url 'geo:project_detail' slug=study.project.slug %}">{{ study.project.title }}</a></li>
+                            {% endif %}
+                            <li><strong>Status:</strong> <span class="badge bg-success">Completed</span></li>
+                            <li><strong>Published:</strong> {{ study.publish_at|date:"F d, Y"|default:"N/A" }}</li>
+                            <li><strong>Featured:</strong> {% if study.is_featured %}<span class="badge bg-warning text-dark">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</li>
+                        </ul>
+                    </div>
+
+                    {# Related Case Studies #}
+                    {% if related %}
+                        <div class="sidebar-card">
+                            <h6><i class="fas fa-link text-primary me-2"></i> Related Case Studies</h6>
+                            <ul>
+                                {% for rel in related %}
+                                    <li><a href="{% url 'geo:case_study_detail' slug=rel.slug %}">{{ rel.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    {# Quick contact #}
+                    <div class="sidebar-card" style="background: var(--primary) !important; border-color: var(--primary);">
+                        <h6 class="text-white"><i class="fas fa-phone me-2"></i> Ready for Your Success Story?</h6>
+                        <p class="text-white-50 small">Let's discuss how Geo‑Junction can help you.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Let's Create Your <span style="color: var(--accent);">Success Story</span></h2>
+            <p class="lead opacity-75">Partner with Geo‑Junction for your next exploration project.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:case_study_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Case Studies</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

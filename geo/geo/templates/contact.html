@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Robert Sichomba - Get in Touch{% endblock title %}
+
+{% block meta_description %}Have a project in mind or a question? Contact Robert Sichomba for inquiries about data analysis, machine learning, web development, or educational software in Zambia.{% endblock meta_description %}
+
+{# No extra_head or extra_js needed here, as global styles/scripts handle most functionality #}
+
+{% block content %}
+    {# Hero Section for Contact #}
+    <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
+        <div class="container" data-animate>
+            <h1 class="display-3 fw-bold mb-3">Let's Connect</h1>
+            <p class="lead mb-4 col-lg-8 mx-auto">
+                Ready to discuss your next project, or just want to say hello? I'd love to hear from you.
+            </p>
+        </div>
+    </section>
+
+    {# Contact Form and Info Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-center fw-bold mb-5">Send Me a Message</h2>
+                    <form method="post" class="p-4 p-md-5 rounded-4 shadow-lg bg-white">
+                        {% csrf_token %} {# Django's CSRF token for form security #}
+                        
+                        {# Display Django form errors non-field errors (e.g., from clean() method) #}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                                {{ form.name }} {# Renders the input field #}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.name.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }}</label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.subject.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.message.id_for_label }}" class="form-label">{{ form.message.label }}</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.message.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Send Message <i class="fas fa-paper-plane ms-2"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <hr class="my-5">
+
+            {# Alternative Contact Info #}
+            <div class="row g-4 text-center mt-5">
+                <div class="col-md-4" data-animate>
+                    <div class="p-4 rounded-4 shadow-sm h-100 service-card">
+                        <div class="service-icon"><i class="fas fa-phone-alt"></i></div>
+                        <h4 class="fw-bold mt-3">Phone</h4>
+                        <p class="mb-0">+260 97X XXX XXX</p> {# Replace with your actual phone number #}
+                    </div>
+                </div>
+                <div class="col-md-4" data-animate>
+                    <div class="p-4 rounded-4 shadow-sm h-100 service-card">
+                        <div class="service-icon"><i class="fas fa-envelope"></i></div>
+                        <h4 class="fw-bold mt-3">Email</h4>
+                        <p class="mb-0"><a href="mailto:info@robertsichomba.com">info@robertsichomba.com</a></p> {# Replace with your actual email #}
+                    </div>
+                </div>
+                <div class="col-md-4" data-animate>
+                    <div class="p-4 rounded-4 shadow-sm h-100 service-card">
+                        <div class="service-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h4 class="fw-bold mt-3">Location</h4>
+                        <p class="mb-0">Lusaka, Zambia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Social Media Call to Action #}
+    <section class="py-5 bg-dark text-white text-center" data-animate>
+        <div class="container my-5">
+            <h2 class="fw-bold mb-4">Connect on Social Media</h2>
+            <p class="lead mb-4">
+                Follow my journey and get real-time updates on my work and insights.
+            </p>
+            <div class="social-links-lg">
+                <a href="https://github.com/robertsichomba" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github fa-2x mx-3"></i></a>
+                <a href="https://linkedin.com/in/robertsichomba" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x mx-3"></i></a>
+                <a href="https://twitter.com/robertsichomba" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter fa-2x mx-3"></i></a>
+                {# Add more social links as needed #}
+            </div>
+        </div>
+    </section>
+{% endblock content %}

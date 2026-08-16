@@ -1,0 +1,152 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Awards & Accreditations – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Geo‑Junction's awards, accreditations, and industry recognitions." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    .awards-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .awards-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/awards-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .awards-hero .container { position: relative; z-index: 1; }
+    .awards-hero h1 { font-weight: 800; font-size: 3rem; }
+    .awards-hero .highlight { background: linear-gradient(135deg, var(--accent), #f9e79f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .awards-hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+
+    .award-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        transition: var(--transition);
+        height: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .award-card:hover { transform: translateY(-6px); box-shadow: 0 16px 56px rgba(0,0,0,0.08); border-color: var(--accent); }
+    .award-card .award-logo {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        margin-bottom: 0.75rem;
+        filter: grayscale(0%) brightness(1);
+        transition: var(--transition);
+    }
+    .award-card:hover .award-logo { transform: scale(1.05); }
+    .award-card .award-icon { font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .award-card h5 { font-weight: 700; }
+    .award-card .issuer { color: var(--gray-600); font-size: 0.9rem; }
+    .award-card .year { color: var(--primary); font-weight: 700; font-size: 0.85rem; background: rgba(26,82,118,0.08); padding: 0.2rem 0.8rem; border-radius: 50px; }
+
+    .year-group { margin-bottom: 3rem; }
+    .year-group h3 { font-weight: 700; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; }
+
+    .empty-state i { opacity: 0.4; }
+
+    @media (max-width: 767.98px) {
+        .awards-hero h1 { font-size: 2.2rem; }
+        .award-card .award-logo { width: 60px; height: 60px; }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    <section class="awards-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Awards</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Awards & <span class="highlight">Accreditations</span></h1>
+            <p class="lead">Recognised for excellence in geophysical exploration and mining consultancy.</p>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto"><a href="javascript:history.back()" class="btn btn-outline-accent btn-sm"><i class="fas fa-arrow-left me-1"></i> Back</a></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+
+    <section class="py-5">
+        <div class="container">
+            {% if grouped_awards %}
+                {% for year, awards in grouped_awards.items %}
+                    <div class="year-group">
+                        <h3>{{ year }}</h3>
+                        <div class="row g-4 mt-2">
+                            {% for award in awards %}
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="award-card">
+                                        {% if award.logo %}
+                                            <img src="{{ award.logo.url }}" alt="{{ award.title }}" class="award-logo">
+                                        {% else %}
+                                            <div class="award-icon"><i class="fas fa-trophy"></i></div>
+                                        {% endif %}
+                                        <h5>{{ award.title }}</h5>
+                                        <p class="issuer">{{ award.issuing_body }}</p>
+                                        <span class="year">{{ award.year }}</span>
+                                        {% if award.description %}
+                                            <p class="text-muted small mt-2">{{ award.description|truncatechars:80 }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5 empty-state">
+                    <i class="fas fa-trophy fa-3x text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted">No awards to display</h4>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Proud of Our <span class="text-accent">Recognition</span></h2>
+            <p class="lead opacity-75">Contact us to learn more about our achievements.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto"><a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+{% endblock content %}

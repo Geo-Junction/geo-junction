@@ -1,0 +1,363 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:personnel.user.get_full_name|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Profile of "|add:personnel.user.get_full_name|add:", "|add:personnel.specialisation|add:" at Geo‑Junction." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       TEAM DETAIL PAGE – Additional styles
+       ============================================================== */
+    .profile-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/profile-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .profile-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .profile-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .profile-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .profile-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .profile-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .profile-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+
+    .profile-avatar {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--accent);
+        transition: var(--transition);
+    }
+    .profile-avatar:hover {
+        transform: scale(1.04);
+        border-color: var(--accent-dark);
+    }
+    .avatar-placeholder {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4.5rem;
+        font-weight: 700;
+        margin: 0 auto;
+        border: 4px solid var(--accent);
+        transition: var(--transition);
+    }
+    .avatar-placeholder:hover {
+        transform: scale(1.04);
+        border-color: var(--accent-dark);
+    }
+
+    /* Sidebar cards – glass */
+    .detail-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        height: 100%;
+        transition: var(--transition);
+    }
+    .detail-card:hover {
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    }
+    .detail-card h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 1rem;
+    }
+    .detail-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .detail-card ul li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .detail-card ul li:last-child {
+        border-bottom: none;
+    }
+    .detail-card .badge-staff {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .project-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .project-item:last-child {
+        border-bottom: none;
+    }
+    .project-item .project-title {
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+    }
+    .project-item .project-title:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+    }
+    .project-item .project-role {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        background: rgba(26, 82, 118, 0.08);
+        padding: 0.2rem 0.8rem;
+        border-radius: 50px;
+    }
+
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .profile-hero h1 {
+            font-size: 2rem;
+        }
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+        }
+        .avatar-placeholder {
+            width: 140px;
+            height: 140px;
+            font-size: 3.5rem;
+        }
+        .project-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="profile-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:team_list' %}">Team</a></li>
+                    <li class="breadcrumb-item active">{{ personnel.user.get_full_name }}</li>
+                </ol>
+            </nav>
+            <h1>{{ personnel.user.get_full_name }}</h1>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:team_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-users me-1"></i> All Team
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# PROFILE DETAILS #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Left column: avatar + basic info #}
+                <div class="col-lg-4 text-center">
+                    {% if personnel.photo %}
+                        <img src="{{ personnel.photo.url }}" alt="{{ personnel.user.get_full_name }}" class="profile-avatar">
+                    {% else %}
+                        <div class="avatar-placeholder">{{ personnel.user.get_full_name|slice:":1" }}</div>
+                    {% endif %}
+                    <h4 class="fw-bold mt-3">{{ personnel.user.get_full_name }}</h4>
+                    <p class="text-muted">{{ personnel.specialisation }}</p>
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        {% if personnel.is_field_staff %}
+                            <span class="badge bg-primary badge-staff">Field Staff</span>
+                        {% endif %}
+                        {% if personnel.is_office_staff %}
+                            <span class="badge bg-secondary badge-staff">Office Staff</span>
+                        {% endif %}
+                    </div>
+                    {% if personnel.linkedin_url %}
+                        <a href="{{ personnel.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                            <i class="fab fa-linkedin me-1"></i> LinkedIn
+                        </a>
+                    {% endif %}
+                    {% if personnel.user.email and personnel.email_public %}
+                        <div class="mt-2">
+                            <a href="mailto:{{ personnel.email_public }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-envelope me-1"></i> Email
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Right column: bio, experience, certifications, projects #}
+                <div class="col-lg-8">
+                    {# Bio #}
+                    <div class="detail-card mb-4">
+                        <h5><i class="fas fa-user text-primary me-2"></i> About</h5>
+                        <p>{{ personnel.bio|default:"No bio available." }}</p>
+                    </div>
+
+                    {# Details #}
+                    <div class="detail-card mb-4">
+                        <h5><i class="fas fa-info-circle text-primary me-2"></i> Professional Details</h5>
+                        <ul>
+                            <li><strong>Years Experience:</strong> {{ personnel.years_experience }}</li>
+                            <li><strong>Specialisation:</strong> {{ personnel.specialisation }}</li>
+                            <li><strong>Certifications:</strong> {{ personnel.certifications|default:"None listed" }}</li>
+                            {% if personnel.email_public %}
+                                <li><strong>Public Email:</strong> <a href="mailto:{{ personnel.email_public }}">{{ personnel.email_public }}</a></li>
+                            {% endif %}
+                            {% if personnel.phone_public %}
+                                <li><strong>Public Phone:</strong> {{ personnel.phone_public }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    {# Projects #}
+                    {% if assignments %}
+                        <div class="detail-card">
+                            <h5><i class="fas fa-bullseye text-primary me-2"></i> Projects</h5>
+                            {% for assign in assignments %}
+                                <div class="project-item">
+                                    <a href="{% url 'geo:project_detail' slug=assign.project.slug %}" class="project-title">
+                                        {{ assign.project.title }}
+                                    </a>
+                                    <span class="project-role">{{ assign.role }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Connect with <span style="color: var(--accent);">Us</span></h2>
+            <p class="lead opacity-75">Reach out to our team for inquiries.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

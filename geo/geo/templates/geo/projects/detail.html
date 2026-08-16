@@ -1,0 +1,563 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:project.title|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:project.title|add:": "|add:project.location|add:" – "|add:project.client.name }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       PROJECT DETAIL – Additional styles
+       ============================================================== */
+    .project-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .project-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/project-detail-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .project-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .project-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .project-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .project-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .project-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .project-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .project-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .project-hero .badge-status {
+        font-size: 0.85rem;
+        padding: 0.4rem 1.2rem;
+    }
+
+    /* Project content */
+    .project-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: var(--gray-700);
+    }
+    .project-content img {
+        max-width: 100%;
+        border-radius: var(--radius);
+        margin: 1rem 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .project-content h2,
+    .project-content h3 {
+        margin-top: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+
+    /* Section title */
+    .section-title {
+        font-weight: 700;
+        color: var(--gray-900);
+        border-bottom: 2px solid rgba(0, 0, 0, 0.04);
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .section-title i {
+        color: var(--primary);
+        margin-right: 0.5rem;
+    }
+
+    /* Info card – glass */
+    .info-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        border-top: 4px solid var(--accent);
+        margin-bottom: 1.5rem;
+    }
+    .info-card .label {
+        font-size: 0.8rem;
+        color: var(--gray-600);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .info-card .value {
+        font-size: 1.05rem;
+        color: var(--gray-900);
+        font-weight: 600;
+    }
+
+    /* Sidebar – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-card h6 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    /* Team member */
+    .team-member {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .team-member:last-child {
+        border-bottom: none;
+    }
+    .team-member .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(26, 82, 118, 0.08);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+    .team-member .name {
+        font-weight: 600;
+        color: var(--gray-800);
+    }
+    .team-member .role {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+    }
+
+    /* Survey / Resource cards */
+    .item-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(2px);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: var(--transition);
+        height: 100%;
+    }
+    .item-card:hover {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: var(--primary-light);
+    }
+
+    /* Report list */
+    .report-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .report-item:last-child {
+        border-bottom: none;
+    }
+    .report-item a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    .report-item a:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+    }
+
+    /* CTA – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .project-hero h1 {
+            font-size: 2rem;
+        }
+        .project-content {
+            font-size: 0.95rem;
+        }
+        .info-card .value {
+            font-size: 0.95rem;
+        }
+        .team-member .avatar {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="project-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:project_list' %}">Projects</a></li>
+                    <li class="breadcrumb-item active">{{ project.title|truncatechars:50 }}</li>
+                </ol>
+            </nav>
+            <h1>{{ project.title }}</h1>
+            <p class="lead text-white-50">{{ project.location|default:"Location TBD" }}{% if project.country %}, {{ project.country }}{% endif %}</p>
+            <span class="badge 
+                {% if project.status == 'completed' %}bg-success
+                {% elif project.status == 'fieldwork' %}bg-warning text-dark
+                {% elif project.status == 'data_processing' %}bg-info
+                {% elif project.status == 'reporting' %}bg-primary
+                {% else %}bg-secondary{% endif %} 
+                badge-status">
+                {{ project.get_status_display }}
+            </span>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Projects
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# PROJECT DETAILS #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main Content #}
+                <div class="col-lg-8">
+                    <div class="project-content">
+                        {% if project.image %}
+                            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid rounded-4">
+                        {% endif %}
+                        {{ project.description|safe }}
+                    </div>
+
+                    {# Surveys #}
+                    {% if surveys %}
+                        <div class="mt-5">
+                            <h5 class="section-title"><i class="fas fa-clipboard-list"></i> Surveys Completed</h5>
+                            <div class="row g-3">
+                                {% for survey in surveys %}
+                                    <div class="col-12 col-md-6">
+                                        <div class="item-card">
+                                            <h6 class="fw-bold">{{ survey.method.name }}</h6>
+                                            <p class="text-muted small mb-1">
+                                                <i class="far fa-calendar-alt me-1"></i>
+                                                {{ survey.start_date|date:"M d, Y" }} – {{ survey.end_date|date:"M d, Y"|default:"Ongoing" }}
+                                            </p>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% if survey.line_km %}
+                                                    <span class="badge bg-secondary">{{ survey.line_km }} km</span>
+                                                {% endif %}
+                                                {% if survey.stations %}
+                                                    <span class="badge bg-secondary">{{ survey.stations }} stations</span>
+                                                {% endif %}
+                                                {% if survey.data_quality %}
+                                                    <span class="badge 
+                                                        {% if survey.data_quality == 'excellent' %}bg-success
+                                                        {% elif survey.data_quality == 'good' %}bg-info
+                                                        {% else %}bg-warning text-dark{% endif %}">
+                                                        {{ survey.get_data_quality_display }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# Drill Holes #}
+                    {% if drill_holes %}
+                        <div class="mt-5">
+                            <h5 class="section-title"><i class="fas fa-tools"></i> Drill Holes</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Hole ID</th>
+                                            <th>Depth (m)</th>
+                                            <th>Start Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for hole in drill_holes %}
+                                            <tr>
+                                                <td><strong>{{ hole.hole_id }}</strong></td>
+                                                <td>{{ hole.total_depth }}</td>
+                                                <td>{{ hole.start_date|date:"M d, Y"|default:"—" }}</td>
+                                                <td>
+                                                    <span class="badge 
+                                                        {% if hole.end_date %}bg-success
+                                                        {% else %}bg-warning text-dark{% endif %}">
+                                                        {% if hole.end_date %}Completed{% else %}In Progress{% endif %}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# Resource Estimates #}
+                    {% if resource_estimates %}
+                        <div class="mt-5">
+                            <h5 class="section-title"><i class="fas fa-chart-bar"></i> Resource Estimates</h5>
+                            <div class="row g-3">
+                                {% for estimate in resource_estimates %}
+                                    <div class="col-12 col-md-4">
+                                        <div class="item-card text-center">
+                                            <span class="badge 
+                                                {% if estimate.category == 'measured' %}bg-success
+                                                {% elif estimate.category == 'indicated' %}bg-warning text-dark
+                                                {% else %}bg-secondary{% endif %} 
+                                                mb-2">
+                                                {{ estimate.get_category_display }}
+                                            </span>
+                                            <h4 class="fw-bold text-primary">{{ estimate.tonnage }} Mt</h4>
+                                            <p class="text-muted small">{{ estimate.commodity }}</p>
+                                            <span class="small text-muted">{{ estimate.effective_date|date:"M d, Y" }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# Reports #}
+                    {% if reports %}
+                        <div class="mt-5">
+                            <h5 class="section-title"><i class="fas fa-file-alt"></i> Reports</h5>
+                            <ul class="list-unstyled">
+                                {% for report in reports %}
+                                    <li class="report-item">
+                                        <div>
+                                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                                            <a href="{{ report.file.url }}" target="_blank">{{ report.title }}</a>
+                                            <small class="text-muted ms-2">{{ report.publication_date|date:"M d, Y" }}</small>
+                                        </div>
+                                        <span class="badge bg-secondary">{{ report.get_report_type_display }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-4">
+                    {# Project Info #}
+                    <div class="info-card">
+                        <h6 class="fw-bold"><i class="fas fa-info-circle text-primary me-2"></i> Project Info</h6>
+                        <div class="row g-2 mt-2">
+                            <div class="col-6">
+                                <div class="label">Client</div>
+                                <div class="value">{{ project.client.name }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="label">Status</div>
+                                <div class="value">
+                                    <span class="badge 
+                                        {% if project.status == 'completed' %}bg-success
+                                        {% elif project.status == 'fieldwork' %}bg-warning text-dark
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ project.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="label">Start Date</div>
+                                <div class="value">{{ project.start_date|date:"M d, Y"|default:"TBD" }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="label">End Date</div>
+                                <div class="value">{{ project.end_date|date:"M d, Y"|default:"Ongoing" }}</div>
+                            </div>
+                            {% if project.budget %}
+                                <div class="col-12">
+                                    <div class="label">Budget</div>
+                                    <div class="value">${{ project.budget|floatformat:2 }}</div>
+                                </div>
+                            {% endif %}
+                            <div class="col-12">
+                                <div class="label">Location</div>
+                                <div class="value">{{ project.location|default:"TBD" }}{% if project.country %}, {{ project.country }}{% endif %}</div>
+                            </div>
+                            {% if project.coordinates %}
+                                <div class="col-12">
+                                    <div class="label">Coordinates</div>
+                                    <div class="value">{{ project.coordinates }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if project.services.all %}
+                            <hr>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for service in project.services.all %}
+                                    <span class="badge bg-primary-soft text-primary">{{ service.name }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if project.project_website %}
+                            <a href="{{ project.project_website }}" target="_blank" class="btn btn-outline-primary w-100 mt-3">
+                                <i class="fas fa-external-link-alt me-2"></i> Visit Project Website
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    {# Team #}
+                    {% if assignments %}
+                        <div class="sidebar-card">
+                            <h6><i class="fas fa-users text-primary me-2"></i> Project Team</h6>
+                            {% for assign in assignments %}
+                                <div class="team-member">
+                                    <div class="avatar">{{ assign.personnel.user.get_full_name|slice:":1" }}</div>
+                                    <div>
+                                        <div class="name">{{ assign.personnel.user.get_full_name }}</div>
+                                        <div class="role">
+                                            {{ assign.role }}
+                                            {% if assign.is_lead %}
+                                                <span class="badge bg-warning text-dark ms-1">Lead</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# Quick contact #}
+                    <div class="sidebar-card" style="background: var(--primary) !important; border-color: var(--primary);">
+                        <h6 class="text-white"><i class="fas fa-phone me-2"></i> Interested in This Project?</h6>
+                        <p class="text-white-50 small">Contact us to learn more about our work.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Interested in This Project?</h2>
+            <p class="lead opacity-75">Contact us to learn more about our work.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

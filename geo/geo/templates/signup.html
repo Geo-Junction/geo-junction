@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up – Join Aplus Initiative{% endblock title %}
+
+{% block meta_description %}Create your free Aplus Initiative account and start excelling at CBU. Access courses, tutorial sheets, and book tutors.{% endblock meta_description %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO SECTION #}
+    {# ============================================================== #}
+    <section class="hero-section d-flex align-items-center" style="min-height: 30vh;">
+        <div class="container text-center" data-animate>
+            <h1 class="display-4 fw-bold mb-3">Create Your <span class="text-gradient">Account</span></h1>
+            <p class="lead col-lg-7 mx-auto">
+                Start your journey to academic excellence at CBU.
+                It's free to get started.
+            </p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# SIGNUP FORM #}
+    {# ============================================================== #}
+    <section class="section-padding" data-animate>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="card border-0 shadow-lg p-4 p-md-5">
+                        <h3 class="fw-bold text-center mb-4">Sign Up</h3>
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="row g-3">
+                                {# Email #}
+                                <div class="col-12">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Full Name #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.full_name.id_for_label }}" class="form-label">{{ form.full_name.label }}</label>
+                                    {{ form.full_name }}
+                                    {% if form.full_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.full_name.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Username #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                                    {{ form.username }}
+                                    {% if form.username.help_text %}
+                                        <div class="form-text">{{ form.username.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.username.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Phone Number #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.phone_number.id_for_label }}" class="form-label">{{ form.phone_number.label }}</label>
+                                    {{ form.phone_number }}
+                                    {% if form.phone_number.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# CBU Student Number #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.cbu_student_number.id_for_label }}" class="form-label">{{ form.cbu_student_number.label }}</label>
+                                    {{ form.cbu_student_number }}
+                                    <div class="form-text">Enter your CBU Student ID if you have one.</div>
+                                    {% if form.cbu_student_number.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.cbu_student_number.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# User Type #}
+                                <div class="col-12">
+                                    <label for="{{ form.user_type.id_for_label }}" class="form-label">{{ form.user_type.label }}</label>
+                                    {{ form.user_type }}
+                                    {% if form.user_type.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.user_type.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Password #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">{{ form.password1.label }}</label>
+                                    <div class="position-relative">
+                                        {{ form.password1 }}
+                                        <span class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" 
+                                              onclick="togglePassword('{{ form.password1.id_for_label }}')" 
+                                              aria-label="Show password" style="cursor: pointer;">
+                                            <i class="fas fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.password1.help_text %}
+                                        <div class="form-text">{{ form.password1.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.password1.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Confirm Password #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">{{ form.password2.label }}</label>
+                                    <div class="position-relative">
+                                        {{ form.password2 }}
+                                        <span class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" 
+                                              onclick="togglePassword('{{ form.password2.id_for_label }}')" 
+                                              aria-label="Show password" style="cursor: pointer;">
+                                            <i class="fas fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.password2.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+
+                        <p class="text-center mt-4">
+                            Already have an account? <a href="{% url 'aplus:login' %}">Log In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# BENEFITS SECTION #}
+    {# ============================================================== #}
+    <section class="section-padding bg-light" data-animate>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Why Join <span class="text-gradient">Aplus?</span></h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <div class="benefit-card text-center p-4">
+                        <div class="benefit-icon"><i class="fas fa-book-open text-primary"></i></div>
+                        <h5>Access All Courses</h5>
+                        <p class="mb-0">Get full access to all 8 core CBU courses with structured materials.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="benefit-card text-center p-4">
+                        <div class="benefit-icon"><i class="fas fa-check-circle text-success"></i></div>
+                        <h5>Practice Tests</h5>
+                        <p class="mb-0">Test your knowledge with instant feedback and track your progress.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="benefit-card text-center p-4">
+                        <div class="benefit-icon"><i class="fas fa-chalkboard-teacher text-primary"></i></div>
+                        <h5>Book Verified Tutors</h5>
+                        <p class="mb-0">Get 1-on-1 help from tutors who understand the CBU curriculum.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

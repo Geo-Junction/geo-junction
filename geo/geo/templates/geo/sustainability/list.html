@@ -1,0 +1,328 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Sustainability – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Geo‑Junction's sustainability reports, ESG initiatives, and environmental commitment." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       SUSTAINABILITY LIST – Additional styles
+       ============================================================== */
+    .hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/sustainability-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero p.lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Sustainability card – glass */
+    .sustainability-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        height: 100%;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        border-left: 4px solid var(--accent);
+    }
+    .sustainability-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .sustainability-card h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .sustainability-card .meta {
+        color: var(--gray-600);
+        font-size: 0.85rem;
+    }
+    .sustainability-card .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        border-radius: 50px;
+        padding: 0.3rem 1.2rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .sustainability-card .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26, 82, 118, 0.2);
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .hero h1 {
+            font-size: 2.2rem;
+        }
+        .sustainability-card {
+            padding: 1.2rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Sustainability</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Sustainability <span class="highlight">Reports</span></h1>
+            <p class="lead">Our commitment to a sustainable future.</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-cogs me-1"></i> Services
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-bullseye me-1"></i> Projects
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# REPORTS GRID #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                {% for report in page_obj %}
+                    <div class="col-12 col-md-6">
+                        <div class="sustainability-card">
+                            <h5>{{ report.title }}</h5>
+                            <p class="text-muted small">{{ report.summary|truncatechars:120 }}</p>
+                            <div class="meta">
+                                <span><i class="far fa-calendar-alt me-1"></i> {{ report.publication_date|date:"M d, Y" }}</span>
+                                {% if report.is_public %}
+                                    <span class="badge bg-success ms-2">Public</span>
+                                {% else %}
+                                    <span class="badge bg-secondary ms-2">Internal</span>
+                                {% endif %}
+                            </div>
+                            <div class="mt-2">
+                                {% if report.report_file %}
+                                    <a href="{{ report.report_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="fas fa-file-pdf me-1"></i> Download
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'geo:sustainability_detail' slug=report.slug %}" class="btn btn-sm btn-outline-primary">
+                                    Read More <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-leaf fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No sustainability reports available</h4>
+                        <p class="text-muted">Please check back later for our latest ESG updates.</p>
+                        <a href="{% url 'geo:home' %}" class="btn btn-outline-primary mt-3">Return Home</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Sustainability pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA SECTION #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Committed to <span style="color:var(--accent);">Sustainability</span></h2>
+            <p class="lead opacity-75">Learn more about our ESG initiatives.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

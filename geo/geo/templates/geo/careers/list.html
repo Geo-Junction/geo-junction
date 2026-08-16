@@ -1,0 +1,402 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Careers – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Explore career opportunities at Geo‑Junction in geophysics, surveying, and mining consultancy." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       CAREERS LIST – Additional styles
+       ============================================================== */
+    .careers-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .careers-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/careers-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .careers-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .careers-hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .careers-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .careers-hero p.lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Filter bar – glass */
+    .filter-bar {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.06));
+    }
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .filter-bar .form-control:focus,
+    .filter-bar .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(26, 82, 118, 0.15);
+    }
+    .filter-bar .form-check-input:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    /* Job card – glass */
+    .job-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        transition: var(--transition);
+        height: 100%;
+        border-left: 4px solid var(--accent);
+    }
+    .job-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 56px rgba(0,0,0,0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .job-card h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .job-card .meta {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+    }
+    .job-card .meta i {
+        margin-right: 0.2rem;
+    }
+    .job-card .badge-featured {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+    }
+    .job-card .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        border-radius: 50px;
+        padding: 0.3rem 1.2rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .job-card .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26,82,118,0.2);
+    }
+
+    /* Pagination – glass */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .careers-hero h1 {
+            font-size: 2.2rem;
+        }
+        .filter-bar {
+            padding: 1rem;
+        }
+        .filter-bar .row > div {
+            margin-bottom: 0.5rem;
+        }
+        .job-card {
+            padding: 1.2rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="careers-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Careers</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Join Our <span class="highlight">Team</span></h1>
+            <p class="lead">Explore career opportunities and become part of a world-class exploration team.</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-cogs me-1"></i> Services
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# FILTER BAR #}
+    {# ============================================================== #}
+    <div class="container mt-3">
+        <div class="filter-bar">
+            <form method="get" action="{% url 'geo:job_list' %}" id="jobFilterForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-3">
+                        <label for="searchInput" class="form-label fw-semibold small text-uppercase text-muted">Search</label>
+                        <input type="text" name="search" id="searchInput" class="form-control" placeholder="Job title or keyword..." value="{{ request.GET.search|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="categorySelect" class="form-label fw-semibold small text-uppercase text-muted">Category</label>
+                        <select name="category" id="categorySelect" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for cat in form.fields.category.queryset %}
+                                <option value="{{ cat.id }}" {% if request.GET.category|add:"0" == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label for="jobTypeSelect" class="form-label fw-semibold small text-uppercase text-muted">Job Type</label>
+                        <select name="job_type" id="jobTypeSelect" class="form-select">
+                            <option value="">All Types</option>
+                            {% for key, label in form.fields.job_type.choices %}
+                                <option value="{{ key }}" {% if request.GET.job_type == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label for="locationInput" class="form-label fw-semibold small text-uppercase text-muted">Location</label>
+                        <input type="text" name="location" id="locationInput" class="form-control" placeholder="City or country..." value="{{ request.GET.location|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-2 d-flex align-items-center gap-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_remote" id="is_remote" value="on" {% if request.GET.is_remote %}checked{% endif %} onchange="this.form.submit();">
+                            <label class="form-check-label small" for="is_remote">Remote Only</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        <a href="{% url 'geo:job_list' %}" class="btn btn-outline-secondary" title="Clear filters"><i class="fas fa-times"></i></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# JOB LISTINGS #}
+    {# ============================================================== #}
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                {% for job in page_obj %}
+                    <div class="col-12 col-md-6">
+                        <div class="job-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5>{{ job.title }}</h5>
+                                {% if job.is_featured %}
+                                    <span class="badge badge-featured"><i class="fas fa-star me-1"></i> Featured</span>
+                                {% endif %}
+                            </div>
+                            <div class="meta">
+                                <span><i class="fas fa-map-pin"></i> {{ job.location|default:"Remote/Anywhere" }}</span>
+                                <span class="ms-3"><i class="fas fa-briefcase"></i> {{ job.get_job_type_display }}</span>
+                                <span class="ms-3"><i class="fas fa-tag"></i> {{ job.category.name }}</span>
+                                {% if job.is_remote %}<span class="badge bg-info text-white ms-2">Remote</span>{% endif %}
+                            </div>
+                            <p class="mt-2 text-muted small">{{ job.description|striptags|truncatechars:120 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap">
+                                <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> Deadline: {{ job.application_deadline|date:"M d, Y" }}</small>
+                                <a href="{% url 'geo:job_detail' slug=job.slug %}" class="btn btn-sm btn-outline-primary">View Details <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-briefcase fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No job openings at the moment</h4>
+                        <p class="text-muted">Please check back later or send us your CV.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-outline-primary mt-3">Contact Us</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Job pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Don't See the Right <span class="text-accent">Role</span>?</h2>
+            <p class="lead opacity-75">We're always looking for talented individuals. Send us your CV.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

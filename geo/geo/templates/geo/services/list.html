@@ -1,0 +1,431 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Our Services – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Geo‑Junction provides magnetometry, gravity surveys, resistivity, electromagnetics, radiometrics, and GIS integration services." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       SERVICES LIST PAGE – Additional styles
+       ============================================================== */
+    .services-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .services-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/services-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .services-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .services-hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .services-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .services-hero p.lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Filter bar – glass */
+    .filter-bar {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.06));
+    }
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .filter-bar .form-control:focus,
+    .filter-bar .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(26, 82, 118, 0.15);
+    }
+
+    /* Featured badge */
+    .featured-badge {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.2rem 0.8rem;
+        border-radius: 50px;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Service card – glass */
+    .service-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 2rem 1.5rem;
+        height: 100%;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .service-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .service-card:hover::after {
+        opacity: 1;
+    }
+    .service-card .service-icon {
+        width: 76px;
+        height: 76px;
+        background: rgba(26, 82, 118, 0.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        color: var(--primary);
+        font-size: 2.2rem;
+        transition: var(--transition);
+        border: 1px solid rgba(26, 82, 118, 0.1);
+    }
+    .service-card:hover .service-icon {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.08);
+        border-color: var(--primary);
+    }
+    .service-card h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .service-card p {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+    }
+    .service-card .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        border-radius: 50px;
+        padding: 0.4rem 1.5rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .service-card .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26, 82, 118, 0.2);
+    }
+
+    .service-card.featured {
+        border: 2px solid var(--accent);
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 767.98px) {
+        .services-hero h1 {
+            font-size: 2.2rem;
+        }
+        .service-card {
+            padding: 1.5rem 1rem;
+        }
+        .filter-bar {
+            padding: 1rem;
+        }
+        .filter-bar .row > div {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO – with overlay #}
+    {# ============================================================== #}
+    <section class="services-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Services</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Our <span class="highlight">Services</span></h1>
+            <p class="lead">Cutting-edge geophysical solutions for the mining and exploration industry.</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-bullseye me-1"></i> Projects
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# FILTER BAR #}
+    {# ============================================================== #}
+    <div class="container mt-3">
+        <div class="filter-bar">
+            <form method="get" action="{% url 'geo:service_list' %}" id="serviceFilterForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label for="searchInput" class="form-label fw-semibold small text-uppercase text-muted">Search</label>
+                        <input type="text" name="q" id="searchInput" class="form-control" placeholder="Search services..." value="{{ search_query|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="categorySelect" class="form-label fw-semibold small text-uppercase text-muted">Category</label>
+                        <select name="category" id="categorySelect" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+                {% if search_query or current_category %}
+                    <div class="mt-2 text-end">
+                        <a href="{% url 'geo:service_list' %}" class="text-muted small">
+                            <i class="fas fa-times me-1"></i> Clear filters
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# FEATURED SERVICES #}
+    {# ============================================================== #}
+    {% if featured_services %}
+        <section class="py-4">
+            <div class="container">
+                <div class="text-center mb-4">
+                    <span class="badge bg-accent text-dark px-3 py-2 rounded-pill fw-semibold">
+                        <i class="fas fa-star me-1"></i> Featured Services
+                    </span>
+                </div>
+                <div class="row g-4">
+                    {% for service in featured_services %}
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="service-card featured">
+                                <span class="featured-badge"><i class="fas fa-star me-1"></i> Featured</span>
+                                <div class="service-icon"><i class="fas {{ service.icon|default:'fa-cog' }}"></i></div>
+                                <h5>{{ service.name }}</h5>
+                                <p>{{ service.short_description|truncatechars:100 }}</p>
+                                <a href="{% url 'geo:service_detail' slug=service.slug %}" class="btn btn-outline-primary btn-sm mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {# ============================================================== #}
+    {# SERVICES GRID #}
+    {# ============================================================== #}
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                {% for service in page_obj %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas {{ service.icon|default:'fa-cog' }}"></i></div>
+                            <h5>{{ service.name }}</h5>
+                            <p>{{ service.short_description|truncatechars:100 }}</p>
+                            <a href="{% url 'geo:service_detail' slug=service.slug %}" class="btn btn-outline-primary btn-sm mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-cogs fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No services found</h4>
+                        <p class="text-muted">Try adjusting your filters or check back later.</p>
+                        <a href="{% url 'geo:service_list' %}" class="btn btn-outline-primary mt-3">View All Services</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Service pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA SECTION – Glass #}
+    {# ============================================================== #}
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Ready to Explore <span class="text-accent">the Future</span>?</h2>
+            <p class="lead opacity-75">Partner with Geo‑Junction for accurate, reliable geophysical exploration.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:news_list' %}" class="text-muted small"><i class="fas fa-newspaper me-1"></i> News</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

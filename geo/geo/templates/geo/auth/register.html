@@ -1,0 +1,313 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}Join Geo‑Junction – Create Your Viewer Account{% endblock title %}
+
+{% block meta_description %}Sign up for a free Geo‑Junction viewer account to explore public projects, news, and technical reports.{% endblock meta_description %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO SECTION – Glass effect over background #}
+    {# ============================================================== #}
+    <section class="hero-section d-flex align-items-center" style="min-height: 30vh;">
+        <div class="container text-center">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Register</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold mb-3 text-white">Create Your <span class="text-accent">Viewer Account</span></h1>
+            <p class="lead text-white-50 col-lg-7 mx-auto">
+                Explore public project data, news, and reports from Geo‑Junction.
+            </p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS – Floating utilities #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-cogs me-1"></i> Services
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# REGISTRATION FORM – Glass card #}
+    {# ============================================================== #}
+    <section class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="glass-card p-4 p-md-5">
+                        <h3 class="fw-bold text-center mb-4">Sign Up</h3>
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {# ===== Two-column layout ===== #}
+                            <div class="row g-3">
+                                {# Email #}
+                                <div class="col-12">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# First & Last Name #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Username (optional) #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                                    {{ form.username }}
+                                    {% if form.username.help_text %}
+                                        <div class="form-text">{{ form.username.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.username.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Phone #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.phone.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# Job Title & Department (optional) #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.job_title.id_for_label }}" class="form-label">{{ form.job_title.label }}</label>
+                                    {{ form.job_title }}
+                                    {% if form.job_title.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.job_title.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.department.id_for_label }}" class="form-label">{{ form.department.label }}</label>
+                                    {{ form.department }}
+                                    {% if form.department.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.department.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {# ===== ROLE DROPDOWN REMOVED – Viewer is default ===== #}
+
+                                {# Password & Confirm #}
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">{{ form.password1.label }}</label>
+                                    <div class="position-relative">
+                                        {{ form.password1 }}
+                                        <span class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" 
+                                              onclick="togglePassword('{{ form.password1.id_for_label }}')" 
+                                              aria-label="Show password" style="cursor: pointer;">
+                                            <i class="fas fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.password1.help_text %}
+                                        <div class="form-text">{{ form.password1.help_text|safe }}</div>
+                                    {% endif %}
+                                    {% if form.password1.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">{{ form.password2.label }}</label>
+                                    <div class="position-relative">
+                                        {{ form.password2 }}
+                                        <span class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" 
+                                              onclick="togglePassword('{{ form.password2.id_for_label }}')" 
+                                              aria-label="Show password" style="cursor: pointer;">
+                                            <i class="fas fa-eye-slash"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.password2.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {# ====================================== #}
+                            {# INFO NOTE – Viewer only #}
+                            {# ====================================== #}
+                            <div class="col-12 mt-3">
+                                <div class="alert alert-info bg-primary-soft border-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Viewer Account:</strong> This registration creates a <strong>Viewer</strong> account with read‑only access to public data.
+                                    <br>
+                                    <small class="text-muted">
+                                        If you are a Geo‑Junction staff member (Geologist, Surveyor, etc.), your account will be created by an administrator. 
+                                        Please contact HR for assistance.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-gold btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Create Viewer Account
+                                </button>
+                            </div>
+                        </form>
+
+                        <p class="text-center mt-4">
+                            Already have an account? <a href="{% url 'geo:login' %}" class="text-accent fw-bold">Log In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# BENEFITS SECTION – Viewer-focused #}
+    {# ============================================================== #}
+    <section class="section-padding section-glass">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">What <span class="text-primary">Viewers</span> Get</h2>
+                <p class="text-muted lead">Stay informed about Geo‑Junction's latest exploration work and industry insights.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <div class="glass-card h-100 p-4 text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-newspaper text-primary"></i></div>
+                        <h5>Latest News</h5>
+                        <p class="text-muted small">Read about our newest projects, field campaigns, and company milestones.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="glass-card h-100 p-4 text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-file-pdf text-primary"></i></div>
+                        <h5>Public Reports</h5>
+                        <p class="text-muted small">Download published case studies, sustainability reports, and technical summaries.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="glass-card h-100 p-4 text-center">
+                        <div class="service-icon mx-auto mb-3"><i class="fas fa-bullhorn text-primary"></i></div>
+                        <h5>Industry Insights</h5>
+                        <p class="text-muted small">Stay ahead with our expert commentary on geophysical trends and mining discoveries.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS – Quick access #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted">|</span>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted">|</span>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted">|</span>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto">
+                <span class="text-muted">|</span>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# JAVASCRIPT for password toggle #}
+    {# ============================================================== #}
+    <script>
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            const icon = event.target.querySelector('i') || event.target;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page.title|default:"Landing Page" }} – Geo‑Junction{% endblock %}
+
+{% block meta_description %}{{ page.meta_description|default:"" }}{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-primary-dark text-white text-center" style="min-height:60vh; display:flex; align-items:center;">
+    <div class="container">
+        <h1 class="display-3 fw-bold">{{ page.title }}</h1>
+        <p class="lead">{{ page.content|striptags|truncatechars:200 }}</p>
+        {% if page.cta_button %}
+        <a href="{{ page.cta_url }}" class="btn btn-cta btn-lg mt-3">{{ page.cta_text }}</a>
+        {% else %}
+        <a href="{% url 'geo:contact' %}" class="btn btn-cta btn-lg mt-3">Get Started</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+<style>
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+</style>
+{% endblock %}

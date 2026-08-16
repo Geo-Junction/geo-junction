@@ -1,0 +1,256 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us – Geo‑Junction{% endblock %}
+
+{% block meta_description %}Get in touch with Geo‑Junction. We're ready to discuss your geophysical exploration, surveying, and mining consultancy needs.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .contact-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/contact-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .contact-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .contact-hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .contact-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .contact-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 2rem;
+        height: 100%;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        border-top: 4px solid var(--accent);
+    }
+    .contact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-hover-shadow);
+    }
+    .contact-card i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    .contact-card h5 {
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+    .contact-card p {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+    }
+    .contact-card a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+    .contact-card a:hover {
+        color: var(--accent);
+    }
+    .office-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        height: 100%;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        border-left: 4px solid var(--accent);
+    }
+    .office-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-hover-shadow);
+    }
+    .office-card h6 {
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+    .office-card p {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+    .office-card i {
+        color: var(--primary);
+        width: 1.5rem;
+        text-align: center;
+    }
+    @media (max-width: 767.98px) {
+        .contact-hero h1 {
+            font-size: 2.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="contact-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Get in <span class="highlight">Touch</span></h1>
+        <p class="lead mx-auto" style="max-width: 600px;">We'd love to hear from you. Reach out for inquiries, proposals, or partnership opportunities.</p>
+    </div>
+</section>
+
+<!-- Contact Form & Info -->
+<section class="section-padding bg-primary-soft">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Form -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-lg p-4 p-md-5">
+                    <h4 class="fw-bold mb-4">Send Us a Message</h4>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{% for error in form.non_field_errors %}{{ error }}{% endfor %}</div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}<div class="invalid-feedback d-block">{% for error in form.name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="invalid-feedback d-block">{% for error in form.email.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label fw-semibold">{{ form.subject.label }}</label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}<div class="invalid-feedback d-block">{% for error in form.subject.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="{{ form.message.id_for_label }}" class="form-label fw-semibold">{{ form.message.label }}</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}<div class="invalid-feedback d-block">{% for error in form.message.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane me-2"></i>Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-5">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="contact-card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h5>Head Office</h5>
+                            <p>123 Exploration Avenue, Lusaka, Zambia</p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="contact-card">
+                            <i class="fas fa-phone-alt"></i>
+                            <h5>Phone</h5>
+                            <p><a href="tel:+260970000000">+260 97 000 0000</a></p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="contact-card">
+                            <i class="fas fa-envelope"></i>
+                            <h5>Email</h5>
+                            <p><a href="mailto:info@geojunction.com">info@geojunction.com</a></p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="contact-card">
+                            <i class="fas fa-clock"></i>
+                            <h5>Working Hours</h5>
+                            <p>Mon–Fri: 8:00 AM – 5:00 PM</p>
+                            <p class="small">Saturday: 9:00 AM – 1:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Office Locations -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Our Offices</span>
+            <h2 class="display-5 fw-bold">Find Us <span class="text-primary">Around the World</span></h2>
+        </div>
+        <div class="row g-4">
+            {% for office in offices %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="office-card">
+                    <h6>{{ office.name }}</h6>
+                    <p><i class="fas fa-map-pin me-2"></i> {{ office.address|truncatechars:80 }}</p>
+                    {% if office.phone %}<p><i class="fas fa-phone me-2"></i> {{ office.phone }}</p>{% endif %}
+                    {% if office.email %}<p><i class="fas fa-envelope me-2"></i> {{ office.email }}</p>{% endif %}
+                    {% if office.is_headquarters %}<span class="badge bg-accent text-dark mt-1">Headquarters</span>{% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-muted">Office locations will be listed soon.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-padding bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold">Let's Discuss Your <span class="text-warning">Exploration</span> Needs</h2>
+        <p class="lead opacity-75">Our team is ready to provide expert advice and solutions.</p>
+        <a href="mailto:info@geojunction.com" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Email Us</a>
+    </div>
+</section>
+
+<style>
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,485 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Our Projects – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Explore Geo‑Junction's featured geophysical exploration projects across Africa and beyond." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       PROJECTS LIST – Additional styles
+       ============================================================== */
+    .projects-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .projects-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/projects-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .projects-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .projects-hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .projects-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .projects-hero p.lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Stats bar – glass */
+    .stats-bar {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        margin-top: -1.5rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.06));
+        position: relative;
+        z-index: 2;
+    }
+    .stats-bar .stat-item {
+        text-align: center;
+    }
+    .stats-bar .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+    .stats-bar .stat-label {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    /* Filter bar – glass */
+    .filter-bar {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.06));
+    }
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .filter-bar .form-control:focus,
+    .filter-bar .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(26, 82, 118, 0.15);
+    }
+
+    /* Project card – glass */
+    .project-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        height: 100%;
+        position: relative;
+    }
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 56px rgba(0,0,0,0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .project-card img {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+        transition: var(--transition);
+    }
+    .project-card:hover img {
+        transform: scale(1.02);
+    }
+    .project-card .project-tag {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: var(--accent);
+        color: var(--primary-dark);
+        padding: 0.25rem 1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 2;
+    }
+    .project-card .card-body {
+        padding: 1.5rem;
+    }
+    .project-card .card-body h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .project-card .card-body p {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+    }
+    .project-card .card-body .meta {
+        color: var(--gray-600);
+        font-size: 0.85rem;
+    }
+    .project-card .card-body .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        border-radius: 50px;
+        padding: 0.3rem 1.2rem;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .project-card .card-body .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26,82,118,0.2);
+    }
+    .project-card .badge-status {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+    }
+
+    /* Pagination – glass */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* CTA – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .projects-hero h1 {
+            font-size: 2.2rem;
+        }
+        .project-card img {
+            height: 160px;
+        }
+        .filter-bar {
+            padding: 1rem;
+        }
+        .stats-bar .stat-number {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="projects-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Projects</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Our <span class="highlight">Projects</span></h1>
+            <p class="lead">Delivering excellence in geophysical exploration and mining.</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-cogs me-1"></i> Services
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# STATS BAR #}
+    {# ============================================================== #}
+    <div class="container">
+        <div class="stats-bar">
+            <div class="row g-3">
+                <div class="col-4">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ page_obj.paginator.count }}</span>
+                        <span class="stat-label">Total Projects</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="stat-item">
+                        <span class="stat-number">{% if status_choices %}{{ page_obj.object_list|length }}{% else %}0{% endif %}</span>
+                        <span class="stat-label">Showing</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ request.GET.status|default:"All"|title }}</span>
+                        <span class="stat-label">Status</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# FILTER BAR #}
+    {# ============================================================== #}
+    <div class="container mt-3">
+        <div class="filter-bar">
+            <form method="get" action="{% url 'geo:project_list' %}" id="projectFilterForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-3">
+                        <label for="searchInput" class="form-label fw-semibold small text-uppercase text-muted">Search</label>
+                        <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search projects..." value="{{ request.GET.search|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="statusSelect" class="form-label fw-semibold small text-uppercase text-muted">Status</label>
+                        <select name="status" id="statusSelect" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Statuses</option>
+                            {% for key, label in status_choices %}
+                                <option value="{{ key }}" {% if request.GET.status == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="countryInput" class="form-label fw-semibold small text-uppercase text-muted">Country</label>
+                        <input type="text" name="country" id="countryInput" class="form-control" placeholder="Filter by country..." value="{{ request.GET.country|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+                {% if request.GET.search or request.GET.status or request.GET.country %}
+                    <div class="mt-2 text-end">
+                        <a href="{% url 'geo:project_list' %}" class="text-muted small">
+                            <i class="fas fa-times me-1"></i> Clear filters
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# PROJECTS GRID #}
+    {# ============================================================== #}
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                {% for project in page_obj %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="project-card">
+                            {% if project.image %}
+                                <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                            {% else %}
+                                <img src="{% static 'images/project-placeholder.jpg' %}" alt="{{ project.title }}">
+                            {% endif %}
+                            <span class="project-tag">{{ project.get_status_display }}</span>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ project.title }}</h5>
+                                <p class="card-text">{{ project.description|truncatechars:100 }}</p>
+                                <div class="meta">
+                                    <span><i class="fas fa-user me-1"></i> {{ project.client.name }}</span>
+                                    <span class="ms-3"><i class="fas fa-map-pin me-1"></i> {{ project.location|default:"TBD" }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge 
+                                        {% if project.status == 'completed' %}bg-success
+                                        {% elif project.status == 'fieldwork' %}bg-warning text-dark
+                                        {% elif project.status == 'data_processing' %}bg-info
+                                        {% elif project.status == 'reporting' %}bg-primary
+                                        {% else %}bg-secondary{% endif %} 
+                                        badge-status">
+                                        {{ project.get_status_display }}
+                                    </span>
+                                    <a href="{% url 'geo:project_detail' slug=project.slug %}" class="btn btn-sm btn-outline-primary">
+                                        View Details <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-bullseye fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No projects found</h4>
+                        <p class="text-muted">Try adjusting your filters or check back later.</p>
+                        <a href="{% url 'geo:project_list' %}" class="btn btn-outline-primary mt-3">View All Projects</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Project pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Ready to Explore <span class="text-accent">the Future</span>?</h2>
+            <p class="lead opacity-75">Partner with Geo‑Junction for your next exploration project.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

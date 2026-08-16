@@ -1,0 +1,410 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:article.title|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:article.content|striptags|truncatechars:160 }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       NEWS DETAIL – Additional styles
+       ============================================================== */
+    .article-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .article-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/article-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .article-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .article-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .article-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .article-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .article-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .article-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .article-hero .meta {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.95rem;
+    }
+    .article-hero .meta i {
+        margin-right: 0.3rem;
+    }
+    .article-hero .meta .badge {
+        font-size: 0.75rem;
+    }
+
+    /* Article content */
+    .article-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--gray-700);
+    }
+    .article-content img {
+        max-width: 100%;
+        border-radius: var(--radius);
+        margin: 1.5rem 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .article-content h2,
+    .article-content h3 {
+        margin-top: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .article-content blockquote {
+        border-left: 4px solid var(--accent);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        color: var(--gray-600);
+        font-style: italic;
+    }
+    .article-content ul,
+    .article-content ol {
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Share buttons */
+    .share-buttons .btn {
+        border-radius: 50px;
+        padding: 0.3rem 1.2rem;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+    .share-buttons .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Related card – glass */
+    .related-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .related-card:hover {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: var(--primary-light);
+        transform: translateX(4px);
+    }
+    .related-card img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+        flex-shrink: 0;
+    }
+    .related-card .content {
+        flex: 1;
+    }
+    .related-card .content h6 {
+        font-weight: 600;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+    }
+    .related-card .content h6 a {
+        text-decoration: none;
+        color: var(--gray-900);
+        transition: var(--transition);
+    }
+    .related-card .content h6 a:hover {
+        color: var(--primary);
+    }
+    .related-card .content small {
+        color: var(--gray-600);
+        font-size: 0.8rem;
+    }
+
+    /* Sidebar – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+    }
+    .sidebar-card:hover {
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    }
+    .sidebar-card h5 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .sidebar-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .sidebar-card ul li {
+        padding: 0.35rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .sidebar-card ul li:last-child {
+        border-bottom: none;
+    }
+    .sidebar-card ul li a {
+        text-decoration: none;
+        color: var(--gray-700);
+        transition: var(--transition);
+    }
+    .sidebar-card ul li a:hover {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .article-hero h1 {
+            font-size: 2rem;
+        }
+        .article-content {
+            font-size: 1rem;
+        }
+        .related-card img {
+            width: 50px;
+            height: 50px;
+        }
+        .share-buttons .btn {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.8rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="article-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:news_list' %}">News</a></li>
+                    <li class="breadcrumb-item active">{{ article.title|truncatechars:50 }}</li>
+                </ol>
+            </nav>
+            <h1>{{ article.title }}</h1>
+            <div class="meta">
+                <span><i class="far fa-calendar-alt"></i> {{ article.publish_at|date:"F d, Y" }}</span>
+                <span class="ms-3"><i class="far fa-user"></i> {{ article.author.get_full_name|default:"Geo‑Junction Admin" }}</span>
+                <span class="ms-3"><i class="far fa-folder"></i> {{ article.category.name|default:"General" }}</span>
+                {% if article.is_featured %}
+                    <span class="badge bg-warning text-dark ms-2"><i class="fas fa-star me-1"></i> Featured</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:news_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All News
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# ARTICLE CONTENT #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main content #}
+                <div class="col-lg-8">
+                    <div class="article-content">
+                        {% if article.image %}
+                            <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid rounded-4">
+                        {% endif %}
+                        {{ article.content|safe }}
+                    </div>
+
+                    {# Share buttons #}
+                    <div class="mt-4">
+                        <p class="fw-semibold">Share this article:</p>
+                        <div class="share-buttons d-flex gap-2 flex-wrap">
+                            <a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ article.title|urlencode }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="fab fa-linkedin"></i> LinkedIn
+                            </a>
+                            <a href="mailto:?subject={{ article.title|urlencode }}&body={{ request.build_absolute_uri }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-envelope"></i> Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-4">
+                    {# Related Articles #}
+                    {% if related %}
+                        <div class="sidebar-card">
+                            <h5><i class="fas fa-link text-primary me-2"></i> Related Articles</h5>
+                            {% for rel in related %}
+                                <div class="related-card">
+                                    {% if rel.image %}
+                                        <img src="{{ rel.image.url }}" alt="{{ rel.title }}">
+                                    {% else %}
+                                        <img src="{% static 'images/news-placeholder.jpg' %}" alt="{{ rel.title }}">
+                                    {% endif %}
+                                    <div class="content">
+                                        <h6><a href="{% url 'geo:news_detail' slug=rel.slug %}">{{ rel.title }}</a></h6>
+                                        <small><i class="far fa-calendar-alt me-1"></i> {{ rel.publish_at|date:"M d, Y" }}</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# Categories #}
+                    <div class="sidebar-card">
+                        <h5><i class="fas fa-folder text-primary me-2"></i> Categories</h5>
+                        <ul>
+                            <li><a href="{% url 'geo:news_list' %}">All News</a></li>
+                            {% for cat in categories %}
+                                <li><a href="{% url 'geo:news_category' slug=cat.slug %}">{{ cat.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    {# Quick contact #}
+                    <div class="sidebar-card" style="background: var(--primary) !important; border-color: var(--primary);">
+                        <h5 class="text-white"><i class="fas fa-phone me-2"></i> Have Questions?</h5>
+                        <p class="text-white-50 small">Contact our team for more information.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Stay <span style="color: var(--accent);">Connected</span></h2>
+            <p class="lead opacity-75">Follow us for more updates and insights.</p>
+            <a href="{% url 'geo:news_list' %}" class="btn btn-cta mt-3"><i class="fas fa-newspaper me-2"></i> More News</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:news_list' %}" class="text-muted small"><i class="fas fa-newspaper me-1"></i> News</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

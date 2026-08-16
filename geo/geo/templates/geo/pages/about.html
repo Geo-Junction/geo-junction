@@ -1,0 +1,249 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}About Us – Geo‑Junction{% endblock %}
+
+{% block meta_description %}Learn about Geo‑Junction, our mission, vision, and commitment to excellence in geophysical exploration and mining consultancy.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .about-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/about-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .about-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .about-hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .about-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .about-hero p.lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.25rem;
+    }
+    .values-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 2rem;
+        text-align: center;
+        height: 100%;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        border-top: 4px solid var(--accent);
+    }
+    .values-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--card-hover-shadow);
+    }
+    .values-card i {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    .values-card h5 {
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+    .values-card p {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+    }
+    .team-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        text-align: center;
+        height: 100%;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+    }
+    .team-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--card-hover-shadow);
+    }
+    .team-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--accent);
+        margin-bottom: 1rem;
+    }
+    .team-card .avatar-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 auto 1rem;
+        border: 3px solid var(--accent);
+    }
+    .team-card h6 {
+        font-weight: 700;
+    }
+    .team-card .role {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+    }
+    @media (max-width: 767.98px) {
+        .about-hero h1 {
+            font-size: 2.2rem;
+        }
+        .team-card img {
+            width: 80px;
+            height: 80px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="about-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold">About <span class="highlight">Geo‑Junction</span></h1>
+        <p class="lead mx-auto" style="max-width: 700px;">World‑class geophysical exploration, surveying, and mining consultancy services trusted by leading mining companies worldwide.</p>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section-padding bg-primary-soft">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+                    <i class="fas fa-bullseye fa-2x text-accent mb-3"></i>
+                    <h4 class="fw-bold">Our Mission</h4>
+                    <p class="text-muted">To provide accurate, reliable, and innovative geophysical solutions that enable our clients to discover and develop mineral resources responsibly and sustainably.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+                    <i class="fas fa-eye fa-2x text-accent mb-3"></i>
+                    <h4 class="fw-bold">Our Vision</h4>
+                    <p class="text-muted">To become the preferred geophysical exploration partner in Africa and beyond, known for technical excellence, integrity, and a commitment to sustainable development.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Our Values</span>
+            <h2 class="display-5 fw-bold">What We <span class="text-primary">Stand For</span></h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-12 col-md-4">
+                <div class="values-card">
+                    <i class="fas fa-handshake"></i>
+                    <h5>Integrity</h5>
+                    <p>We operate with honesty, transparency, and accountability in everything we do.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="values-card">
+                    <i class="fas fa-flask"></i>
+                    <h5>Excellence</h5>
+                    <p>We pursue technical excellence and continuous improvement in all our services.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="values-card">
+                    <i class="fas fa-leaf"></i>
+                    <h5>Sustainability</h5>
+                    <p>We are committed to environmentally responsible and socially conscious exploration.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team -->
+<section class="section-padding bg-primary-soft">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Our Team</span>
+            <h2 class="display-5 fw-bold">Meet the <span class="text-primary">Experts</span></h2>
+        </div>
+        <div class="row g-4">
+            {% for member in team %}
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="team-card">
+                    {% if member.photo %}
+                    <img src="{{ member.photo.url }}" alt="{{ member.user.get_full_name }}">
+                    {% else %}
+                    <div class="avatar-placeholder">{{ member.user.get_full_name|slice:":1" }}</div>
+                    {% endif %}
+                    <h6 class="fw-bold">{{ member.user.get_full_name }}</h6>
+                    <p class="role">{{ member.specialisation }}</p>
+                    <p class="text-muted small">{{ member.bio|truncatechars:60 }}</p>
+                    <a href="{% url 'geo:team_detail' id=member.id %}" class="btn btn-sm btn-outline-primary">View Profile</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-muted">Team members will be added soon.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-padding bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold">Ready to Partner with <span class="text-warning">Geo‑Junction</span>?</h2>
+        <p class="lead opacity-75">Contact us today to discuss your exploration needs.</p>
+        <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Get in Touch</a>
+    </div>
+</section>
+
+<style>
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+</style>
+
+{% endblock %}

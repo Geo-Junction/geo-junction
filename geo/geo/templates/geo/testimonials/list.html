@@ -1,0 +1,211 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Testimonials – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Client testimonials for Geo‑Junction's geophysical exploration services." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    .testimonials-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .testimonials-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/testimonials-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .testimonials-hero .container { position: relative; z-index: 1; }
+    .testimonials-hero h1 { font-weight: 800; font-size: 3rem; }
+    .testimonials-hero .highlight { background: linear-gradient(135deg, var(--accent), #f9e79f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .testimonials-hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+
+    .testimonial-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        transition: var(--transition);
+        height: 100%;
+        border-left: 4px solid var(--accent);
+    }
+    .testimonial-card:hover { transform: translateY(-6px); box-shadow: 0 16px 56px rgba(0,0,0,0.08); border-color: var(--accent); }
+    .testimonial-card .avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent);
+        margin-right: 1rem;
+    }
+    .testimonial-card .avatar-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border: 2px solid var(--accent);
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    .testimonial-card .content { flex: 1; }
+    .testimonial-card .content h6 { font-weight: 700; margin-bottom: 0; }
+    .testimonial-card .content .role { color: var(--gray-600); font-size: 0.85rem; }
+    .testimonial-card .content .stars { color: var(--accent); font-size: 0.9rem; letter-spacing: 2px; }
+    .testimonial-card .content blockquote { font-style: italic; color: var(--gray-700); margin: 0.5rem 0 0; font-size: 0.95rem; line-height: 1.6; }
+
+    .featured-badge { position: absolute; top: 12px; right: 12px; background: var(--accent); color: var(--primary-dark); font-weight: 700; font-size: 0.65rem; padding: 0.25rem 0.8rem; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover { background: var(--primary); color: white; }
+    .pagination .page-item.active .page-link { background: var(--primary); border-color: var(--primary); color: white; }
+
+    .empty-state i { opacity: 0.4; }
+
+    @media (max-width: 767.98px) {
+        .testimonials-hero h1 { font-size: 2.2rem; }
+        .testimonial-card .avatar { width: 48px; height: 48px; }
+        .testimonial-card .avatar-placeholder { width: 48px; height: 48px; font-size: 1.2rem; }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    <section class="testimonials-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Testimonials</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Client <span class="highlight">Testimonials</span></h1>
+            <p class="lead">What our clients say about working with Geo‑Junction.</p>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto"><a href="javascript:history.back()" class="btn btn-outline-accent btn-sm"><i class="fas fa-arrow-left me-1"></i> Back</a></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+
+    <section class="py-5">
+        <div class="container">
+            {% if featured %}
+                <div class="row g-4 mb-5">
+                    {% for test in featured %}
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="testimonial-card position-relative">
+                                <span class="featured-badge"><i class="fas fa-star me-1"></i> Featured</span>
+                                <div class="d-flex align-items-center">
+                                    {% if test.image %}
+                                        <img src="{{ test.image.url }}" alt="{{ test.author }}" class="avatar">
+                                    {% else %}
+                                        <div class="avatar-placeholder">{{ test.author|slice:":1" }}</div>
+                                    {% endif %}
+                                    <div class="content">
+                                        <h6>{{ test.author }}</h6>
+                                        <div class="role">{{ test.role }}{% if test.company %} – {{ test.company }}{% endif %}</div>
+                                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                                    </div>
+                                </div>
+                                <blockquote>“{{ test.content }}”</blockquote>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if page_obj %}
+                <div class="row g-4">
+                    {% for test in page_obj %}
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="testimonial-card">
+                                <div class="d-flex align-items-center">
+                                    {% if test.image %}
+                                        <img src="{{ test.image.url }}" alt="{{ test.author }}" class="avatar">
+                                    {% else %}
+                                        <div class="avatar-placeholder">{{ test.author|slice:":1" }}</div>
+                                    {% endif %}
+                                    <div class="content">
+                                        <h6>{{ test.author }}</h6>
+                                        <div class="role">{{ test.role }}{% if test.company %} – {{ test.company }}{% endif %}</div>
+                                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                                    </div>
+                                </div>
+                                <blockquote>“{{ test.content }}”</blockquote>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5 empty-state">
+                    <i class="fas fa-comment-dots fa-3x text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted">No testimonials yet</h4>
+                </div>
+            {% endif %}
+
+            {% if page_obj.has_other_pages %}
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1">&laquo;&laquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% endif %}
+                        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Ready to <span class="text-accent">Experience</span> the Difference?</h2>
+            <p class="lead opacity-75">Join our satisfied clients – contact us today.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto"><a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,969 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}Geo‑Junction | Geophysical Exploration & Mining Services{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       HERO – Transparent over body background, with overlay
+       ============================================================== */
+    .hero-section {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 6rem 0 4rem;
+        /* background is inherited from body */;
+    }
+
+    /* Dark overlay specifically for hero to ensure readability */
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(ellipse at 30% 50%, rgba(10, 42, 63, 0.5) 0%, rgba(10, 42, 63, 0.8) 100%);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .hero-section .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-badge {
+        background: rgba(241, 196, 15, 0.15);
+        border: 1px solid rgba(241, 196, 15, 0.3);
+        color: var(--accent-light);
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        display: inline-block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        backdrop-filter: blur(8px);
+    }
+
+    .hero-badge i {
+        color: var(--accent);
+    }
+
+    .hero-title {
+        font-weight: 800;
+        color: white;
+        line-height: 1.1;
+        text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-title .highlight {
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+    }
+
+    .hero-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.25rem;
+        line-height: 1.6;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-hero-primary {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.85rem 2.8rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+        font-size: 1.05rem;
+        box-shadow: 0 8px 32px rgba(241, 196, 15, 0.35);
+    }
+
+    .btn-hero-primary:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 48px rgba(241, 196, 15, 0.5);
+    }
+
+    .btn-hero-outline {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        border: 2px solid var(--accent);
+        color: white;
+        font-weight: 600;
+        padding: 0.85rem 2.8rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        font-size: 1.05rem;
+    }
+
+    .btn-hero-outline:hover {
+        background: var(--accent);
+        color: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 32px rgba(241, 196, 15, 0.3);
+    }
+
+    .hero-stats .stat-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(8px);
+        border-radius: var(--radius);
+        padding: 1rem 0.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: var(--transition);
+    }
+
+    .hero-stats .stat-item:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-4px);
+    }
+
+    .hero-stats .stat-number {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: var(--accent);
+        display: block;
+        line-height: 1.2;
+    }
+
+    .hero-stats .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.8rem;
+    }
+
+    .hero-image-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hero-image-wrapper img {
+        max-width: 100%;
+        filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.5));
+        border-radius: var(--radius);
+        transition: var(--transition);
+    }
+
+    .hero-image-wrapper:hover img {
+        transform: scale(1.02);
+    }
+
+    /* ==============================================================
+       SECTION – Glassmorphism base
+       ============================================================== */
+    .section-glass {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-glass-dark {
+        background: rgba(10, 42, 63, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: white;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+        border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+    }
+
+    .section-glass-dark .text-muted {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    /* ==============================================================
+       SERVICES CARDS (Glass)
+       ============================================================== */
+    .service-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 2rem 1.5rem;
+        height: 100%;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .service-card:hover::after {
+        opacity: 1;
+    }
+
+    .service-icon {
+        width: 76px;
+        height: 76px;
+        background: rgba(26, 82, 118, 0.08);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        color: var(--primary);
+        font-size: 2.2rem;
+        transition: var(--transition);
+        border: 1px solid rgba(26, 82, 118, 0.1);
+    }
+
+    .service-card:hover .service-icon {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.08);
+        border-color: var(--primary);
+    }
+
+    /* ==============================================================
+       PROJECT CARDS (Glass)
+       ============================================================== */
+    .project-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        height: 100%;
+        position: relative;
+    }
+
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+        border-color: var(--accent);
+    }
+
+    .project-card img {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .project-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .project-tag {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: var(--accent);
+        color: var(--primary-dark);
+        padding: 0.25rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(4px);
+    }
+
+    /* ==============================================================
+       STATS SECTION (Solid dark blue, as before)
+       ============================================================== */
+    .stats-section {
+        background: var(--primary-dark);
+        padding: 4rem 0;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+        border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 3.2rem;
+        font-weight: 800;
+        color: var(--accent);
+        display: block;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ==============================================================
+       TESTIMONIALS (Glass)
+       ============================================================== */
+    .testimonial-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 2rem;
+        height: 100%;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: var(--transition);
+        border-left: 4px solid var(--accent);
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .testimonial-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent);
+    }
+
+    /* ==============================================================
+       NEWS CARDS (Glass)
+       ============================================================== */
+    .news-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: var(--transition);
+        height: 100%;
+    }
+
+    .news-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+        border-color: var(--accent);
+    }
+
+    .news-card img {
+        height: 160px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .news-card .card-body {
+        padding: 1.5rem;
+    }
+
+    /* ==============================================================
+       CTA – Glass dark
+       ============================================================== */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 4rem 0;
+        color: white;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.9rem 2.8rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+        font-size: 1.1rem;
+        box-shadow: 0 8px 32px rgba(241, 196, 15, 0.3);
+    }
+
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 48px rgba(241, 196, 15, 0.4);
+    }
+
+    /* ==============================================================
+       CLIENTS / PARTNERS LOGO STRIP
+       ============================================================== */
+    .partner-logo {
+        filter: grayscale(1) brightness(0.6);
+        transition: var(--transition);
+        opacity: 0.6;
+        max-height: 60px;
+        width: auto;
+    }
+
+    .partner-logo:hover {
+        filter: grayscale(0) brightness(1);
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    /* ==============================================================
+       RESPONSIVE
+       ============================================================== */
+    @media (max-width: 991.98px) {
+        .hero-title {
+            font-size: 3rem;
+        }
+        .hero-stats .stat-number {
+            font-size: 2.2rem;
+        }
+        .hero-section {
+            min-height: auto;
+            padding: 4rem 0;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .hero-title {
+            font-size: 2.4rem;
+        }
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        .hero-stats .stat-number {
+            font-size: 1.8rem;
+        }
+        .hero-stats .stat-label {
+            font-size: 0.7rem;
+        }
+        .stat-number {
+            font-size: 2.2rem;
+        }
+        .service-card {
+            padding: 1.5rem 1rem;
+        }
+        .project-card img {
+            height: 160px;
+        }
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+        }
+        .btn-hero-primary,
+        .btn-hero-outline {
+            padding: 0.6rem 1.8rem;
+            font-size: 0.9rem;
+        }
+        .hero-image-wrapper img {
+            max-width: 70%;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        .hero-subtitle {
+            font-size: 0.95rem;
+        }
+        .hero-stats .stat-number {
+            font-size: 1.5rem;
+        }
+        .hero-stats .stat-label {
+            font-size: 0.65rem;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* ==============================================================
+       SCROLL ANIMATION (optional – can be enabled)
+       ============================================================== */
+    .fade-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ==============================================================
+HERO – Full width, transparent with overlay, using body background
+============================================================== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <div class="hero-badge mb-4">
+                    <i class="fas fa-globe-africa me-2"></i> Global Exploration Partner
+                </div>
+                <h1 class="hero-title display-3 fw-bold mb-3">
+                    Unlocking Earth's <span class="highlight">Hidden Resources</span><br>
+                    with <span class="highlight">Precision</span>
+                </h1>
+                <p class="hero-subtitle mb-4">
+                    Geo‑Junction delivers world‑class geophysical exploration, surveying, and mining consultancy services to the global mining industry.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'geo:service_list' %}" class="btn btn-hero-primary">
+                        <i class="fas fa-cogs me-2"></i> Our Services
+                    </a>
+                    <a href="{% url 'geo:project_list' %}" class="btn btn-hero-outline">
+                        <i class="fas fa-bullseye me-2"></i> View Projects
+                    </a>
+                </div>
+                <!-- Hero Stats (glass) -->
+                <div class="row g-3 mt-5 hero-stats">
+                    <div class="col-4">
+                        <div class="stat-item">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-item">
+                            <span class="stat-number">120+</span>
+                            <span class="stat-label">Clients</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-item">
+                            <span class="stat-number">15</span>
+                            <span class="stat-label">Countries</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 hero-image-wrapper">
+                <img src="{% static 'images/logo.jpg' %}" alt="Geophysical Exploration" class="img-fluid">
+                <p class="text-white-50 small mt-3 text-center"><i class="fas fa-satellite-dish me-1"></i> Advanced geophysical data collection &amp; interpretation</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+SERVICES – Glass section
+============================================================== -->
+<section class="section-padding section-glass">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Our Expertise</span>
+            <h2 class="display-5 fw-bold">What We <span class="text-primary">Do</span></h2>
+            <p class="text-muted lead">Cutting-edge geophysical solutions for the mining and exploration industry.</p>
+        </div>
+        <div class="row g-4">
+            <!-- Service 1 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-magnet"></i></div>
+                    <h5 class="fw-bold">Magnetometry</h5>
+                    <p class="text-muted small">High‑resolution magnetic surveys to identify mineralised zones and structural features.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <!-- Service 2 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-weight-hanging"></i></div>
+                    <h5 class="fw-bold">Gravity Surveys</h5>
+                    <p class="text-muted small">Precision gravity measurements for detecting subsurface density contrasts and ore bodies.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <!-- Service 3 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-bolt"></i></div>
+                    <h5 class="fw-bold">Electrical Resistivity</h5>
+                    <p class="text-muted small">Advanced IP/Resistivity surveys to map subsurface geology and mineralisation.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <!-- Service 4 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-wave-square"></i></div>
+                    <h5 class="fw-bold">Electromagnetics</h5>
+                    <p class="text-muted small">Time‑domain and frequency‑domain EM surveys for conductive mineral targets.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <!-- Service 5 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-satellite-dish"></i></div>
+                    <h5 class="fw-bold">Radiometric Surveys</h5>
+                    <p class="text-muted small">Airborne and ground radiometric mapping for uranium and other radioactive minerals.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <!-- Service 6 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fas fa-globe-americas"></i></div>
+                    <h5 class="fw-bold">GIS & Data Integration</h5>
+                    <p class="text-muted small">Comprehensive geospatial data management and integrated interpretation.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary mt-2">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'geo:service_list' %}" class="btn btn-primary btn-lg">Explore All Services <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+WHY CHOOSE US – Glass section
+============================================================== -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Why Choose Us</span>
+            <h2 class="display-5 fw-bold">Built on <span class="text-primary">Excellence</span></h2>
+            <p class="text-muted lead">We combine deep technical knowledge with a commitment to safety and sustainability.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center">
+                    <i class="fas fa-flask text-primary display-4 mb-3"></i>
+                    <h5 class="fw-bold">Innovative Technology</h5>
+                    <p class="text-muted small">We invest in the latest geophysical equipment and software to deliver superior data quality.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center">
+                    <i class="fas fa-users text-primary display-4 mb-3"></i>
+                    <h5 class="fw-bold">Expert Team</h5>
+                    <p class="text-muted small">Our geophysicists and geologists have decades of combined experience in major mining regions.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center">
+                    <i class="fas fa-leaf text-primary display-4 mb-3"></i>
+                    <h5 class="fw-bold">Sustainable Practices</h5>
+                    <p class="text-muted small">We are committed to environmentally responsible exploration and community engagement.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card p-4 h-100 text-center">
+                    <i class="fas fa-chart-line text-primary display-4 mb-3"></i>
+                    <h5 class="fw-bold">Proven Results</h5>
+                    <p class="text-muted small">Our work has led to the discovery of multiple world‑class deposits across Africa.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+FEATURED PROJECTS – Glass
+============================================================== -->
+<section class="section-padding section-glass">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Our Work</span>
+            <h2 class="display-5 fw-bold">Featured <span class="text-primary">Projects</span></h2>
+            <p class="text-muted lead">Delivering results that speak for themselves.</p>
+        </div>
+        <div class="row g-4">
+            <!-- Project 1 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="project-card">
+                    <img src="{% static 'images/logo.jpg' %}" alt="Kamoa‑Kakula Copper Project" class="card-img-top">
+                    <span class="project-tag">Fieldwork</span>
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Kamoa‑Kakula Copper Project</h5>
+                        <p class="card-text text-muted small">Large‑scale gravity and EM surveys for the world‑class copper deposit in DRC.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Details <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Project 2 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="project-card">
+                    <img src="{% static 'images/logo.jpg' %}" alt="Northern Zambia Gold Belt" class="card-img-top">
+                    <span class="project-tag">Completed</span>
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Northern Zambia Gold Belt</h5>
+                        <p class="card-text text-muted small">Integrated magnetic, radiometric, and soil sampling survey for gold exploration.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Details <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Project 3 -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="project-card">
+                    <img src="{% static 'images/logo.jpg' %}" alt="Southern Copperbelt 3D Inversion" class="card-img-top">
+                    <span class="project-tag">Data Processing</span>
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Southern Copperbelt 3D Inversion</h5>
+                        <p class="card-text text-muted small">Advanced 3D inversion of MT and gravity data to model deep‑seated structures.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Details <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'geo:project_list' %}" class="btn btn-primary btn-lg">Browse All Projects <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+STATS – Solid dark blue (as before)
+============================================================== -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Projects Delivered</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number">120+</span>
+                    <span class="stat-label">Happy Clients</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Countries Worked</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number">98%</span>
+                    <span class="stat-label">Client Satisfaction</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+TESTIMONIALS – Glass
+============================================================== -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Testimonials</span>
+            <h2 class="display-5 fw-bold">What Our <span class="text-primary">Clients</span> Say</h2>
+        </div>
+        <div class="row g-4">
+            <!-- Testimonial 1 -->
+            <div class="col-12 col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'images/avatar-1.jpg' %}" alt="John Mwansa" class="testimonial-avatar me-3">
+                        <div>
+                            <h6 class="fw-bold mb-0">John Mwansa</h6>
+                            <small class="text-muted">CEO, African Mining Co.</small>
+                        </div>
+                    </div>
+                    <p class="testimonial-quote">“Geo‑Junction’s geophysical surveys were instrumental in identifying our new copper deposit. Their team’s professionalism and technical expertise are unparalleled.”</p>
+                    <div class="text-warning mt-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Testimonial 2 -->
+            <div class="col-12 col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'images/avatar-2.jpg' %}" alt="Grace Phiri" class="testimonial-avatar me-3">
+                        <div>
+                            <h6 class="fw-bold mb-0">Grace Phiri</h6>
+                            <small class="text-muted">Exploration Manager, Global Resources</small>
+                        </div>
+                    </div>
+                    <p class="testimonial-quote">“The high‑resolution magnetic data provided by Geo‑Junction gave us the confidence to drill and hit mineralization at the first target. Highly recommended!”</p>
+                    <div class="text-warning mt-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Testimonial 3 -->
+            <div class="col-12 col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'images/avatar-3.jpg' %}" alt="Dr. Samuel Banda" class="testimonial-avatar me-3">
+                        <div>
+                            <h6 class="fw-bold mb-0">Dr. Samuel Banda</h6>
+                            <small class="text-muted">Director, Geoscience Consultancy</small>
+                        </div>
+                    </div>
+                    <p class="testimonial-quote">“We’ve used Geo‑Junction for multiple projects across Zambia and DRC. Their integrated approach from survey design to final interpretation is second to none.”</p>
+                    <div class="text-warning mt-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+LATEST NEWS – Glass
+============================================================== -->
+<section class="section-padding section-glass">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Latest Updates</span>
+            <h2 class="display-5 fw-bold">News & <span class="text-primary">Insights</span></h2>
+        </div>
+        <div class="row g-4">
+            <!-- News 1 -->
+            <div class="col-12 col-md-4">
+                <div class="news-card">
+                    <img src="{% static 'images/news-1.jpg' %}" alt="News" class="card-img-top">
+                    <div class="card-body">
+                        <span class="badge bg-secondary mb-2">Industry</span>
+                        <h6 class="fw-bold">Geo‑Junction Expands into DRC</h6>
+                        <p class="text-muted small">We are proud to announce our new office in Lubumbashi, DRC, to better serve the growing mining sector.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- News 2 -->
+            <div class="col-12 col-md-4">
+                <div class="news-card">
+                    <img src="{% static 'images/news-2.jpg' %}" alt="News" class="card-img-top">
+                    <div class="card-body">
+                        <span class="badge bg-secondary mb-2">Technology</span>
+                        <h6 class="fw-bold">New 3D Inversion Software Deployed</h6>
+                        <p class="text-muted small">We’ve upgraded our processing capabilities with state‑of‑the‑art 3D inversion algorithms.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- News 3 -->
+            <div class="col-12 col-md-4">
+                <div class="news-card">
+                    <img src="{% static 'images/news-3.jpg' %}" alt="News" class="card-img-top">
+                    <div class="card-body">
+                        <span class="badge bg-secondary mb-2">Sustainability</span>
+                        <h6 class="fw-bold">Geo‑Junction Commits to Net Zero</h6>
+                        <p class="text-muted small">We are committed to reducing our carbon footprint and implementing sustainable exploration practices.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'geo:news_list' %}" class="btn btn-primary btn-lg">View All News <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+CLIENTS / PARTNERS – Glass
+============================================================== -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-2">Trusted By</span>
+            <h2 class="display-5 fw-bold">Our <span class="text-primary">Partners</span></h2>
+        </div>
+        <div class="row g-4 justify-content-center align-items-center">
+            <div class="col-4 col-md-2 text-center">
+                <img src="{% static 'images/logo.jpg' %}" alt="Partner 1" class="partner-logo img-fluid">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <img src="{% static 'images/logo.jpg' %}" alt="Partner 2" class="partner-logo img-fluid">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <img src="{% static 'images/logo.jpg' %}" alt="Partner 3" class="partner-logo img-fluid">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <img src="{% static 'images/logo.jpg' %}" alt="Partner 4" class="partner-logo img-fluid">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <img src="{% static 'images/logo.jpg' %}" alt="Partner 5" class="partner-logo img-fluid">
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <img src="{% static 'images/logo.jpg' %}" alt="Partner 6" class="partner-logo img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==============================================================
+CTA – Glass dark
+============================================================== -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <h2 class="display-6 fw-bold">Ready to Explore <span class="text-warning">the Future?</span></h2>
+                <p class="lead opacity-75">Partner with Geo‑Junction for accurate, reliable geophysical exploration and consulting.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'geo:contact' %}" class="btn btn-cta">
+                    <i class="fas fa-envelope me-2"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

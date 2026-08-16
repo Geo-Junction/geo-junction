@@ -1,0 +1,89 @@
+{% extends 'aplus/base.html' %}
+{% load static %}
+
+{% block title %}Terms of Service – Aplus Initiative{% endblock %}
+
+{% block meta_description %}Read the Aplus Initiative terms of service. Understand your rights and responsibilities when using our platform.{% endblock %}
+
+{% block content %}
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center" data-animate>
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-lg p-4 p-md-5">
+                    <h1 class="display-5 fw-bold mb-4">Terms of <span class="text-gradient">Service</span></h1>
+                    <p class="text-muted">Last updated: {% now "F d, Y" %}</p>
+                    <hr>
+
+                    <p class="lead">Welcome to Aplus Initiative. By using our platform, you agree to these terms of service.</p>
+
+                    <h4 class="fw-bold mt-4">1. Acceptance of Terms</h4>
+                    <p>By creating an account or using the Aplus Initiative platform, you agree to be bound by these terms. If you do not agree, please do not use our services.</p>
+
+                    <h4 class="fw-bold mt-4">2. Description of Service</h4>
+                    <p>Aplus Initiative provides CBU students with access to:</p>
+                    <ul>
+                        <li>Structured course materials and syllabus content</li>
+                        <li>Downloadable tutorial sheets with solutions</li>
+                        <li>Practice tests with instant feedback</li>
+                        <li>Booking and scheduling of tutoring sessions</li>
+                        <li>Progress tracking and personalized learning tools</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">3. User Accounts</h4>
+                    <ul>
+                        <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+                        <li>You agree to provide accurate and complete information</li>
+                        <li>You are responsible for all activities that occur under your account</li>
+                        <li>We reserve the right to suspend or terminate accounts that violate these terms</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">4. User Conduct</h4>
+                    <p>You agree to use the platform responsibly and not to:</p>
+                    <ul>
+                        <li>Share or distribute content without authorization</li>
+                        <li>Attempt to hack, disrupt, or compromise the platform</li>
+                        <li>Harass, abuse, or harm other users</li>
+                        <li>Upload malicious code or viruses</li>
+                        <li>Use the platform for any illegal or unethical purposes</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">5. Intellectual Property</h4>
+                    <ul>
+                        <li>All content on the platform (including courses, materials, and designs) is the intellectual property of Aplus Initiative</li>
+                        <li>You may not reproduce, distribute, or create derivative works without permission</li>
+                        <li>You retain ownership of your personal content (e.g., notes, progress data)</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">6. Tutoring Sessions</h4>
+                    <ul>
+                        <li>Bookings are subject to tutor availability and capacity</li>
+                        <li>Cancellations must be made at least 24 hours in advance</li>
+                        <li>No-shows may result in restrictions on future bookings</li>
+                        <li>Payments are processed securely through our payment providers</li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4">7. Disclaimer of Warranties</h4>
+                    <p>The platform is provided "as is" without warranties of any kind. While we strive for accuracy and reliability, we do not guarantee that all content is error-free.</p>
+
+                    <h4 class="fw-bold mt-4">8. Limitation of Liability</h4>
+                    <p>To the fullest extent permitted by law, Aplus Initiative shall not be liable for any indirect, incidental, or consequential damages arising from the use of our platform.</p>
+
+                    <h4 class="fw-bold mt-4">9. Changes to Terms</h4>
+                    <p>We reserve the right to update these terms at any time. We will notify users of significant changes via email or platform notification.</p>
+
+                    <h4 class="fw-bold mt-4">10. Contact Us</h4>
+                    <p>If you have any questions about these terms, please <a href="{% url 'aplus:contact' %}">contact us</a>.</p>
+
+                    <div class="mt-4">
+                        <a href="{% url 'aplus:privacy' %}" class="btn btn-outline-secondary me-2">Privacy Policy</a>
+                        <a href="{% url 'aplus:contact' %}" class="btn btn-outline-primary">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

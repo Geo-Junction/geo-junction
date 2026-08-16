@@ -1,0 +1,424 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:job.title|add:" – Geo‑Junction Careers" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Apply for "|add:job.title|add:" at Geo‑Junction. "|add:job.location }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       CAREERS DETAIL – Additional styles
+       ============================================================== */
+    .job-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .job-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/job-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .job-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .job-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .job-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .job-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .job-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .job-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .job-hero .meta {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.95rem;
+    }
+    .job-hero .meta .badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
+    }
+
+    /* Job content */
+    .job-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: var(--gray-700);
+    }
+    .job-content h4 {
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-top: 1.5rem;
+    }
+    .job-content ul {
+        padding-left: 1.5rem;
+    }
+    .job-content ul li {
+        margin-bottom: 0.3rem;
+    }
+
+    /* Sidebar – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-card h5 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .sidebar-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .sidebar-card ul li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .sidebar-card ul li:last-child {
+        border-bottom: none;
+    }
+    .sidebar-card ul li a {
+        text-decoration: none;
+        color: var(--primary);
+        transition: var(--transition);
+    }
+    .sidebar-card ul li a:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+    }
+
+    /* Application form – glass */
+    .application-form .form-control,
+    .application-form .form-select {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        border: 1px solid rgba(0,0,0,0.08);
+        background: rgba(255,255,255,0.9);
+        transition: var(--transition);
+    }
+    .application-form .form-control:focus,
+    .application-form .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(26,82,118,0.15);
+        background: white;
+    }
+    .application-form .btn-primary {
+        background: var(--primary);
+        border: none;
+        padding: 0.75rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: var(--transition);
+    }
+    .application-form .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26,82,118,0.2);
+    }
+
+    /* Related jobs */
+    .related-item {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .related-item:last-child {
+        border-bottom: none;
+    }
+    .related-item a {
+        font-weight: 500;
+        color: var(--primary);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    .related-item a:hover {
+        color: var(--accent-dark);
+        text-decoration: underline;
+    }
+    .related-item small {
+        display: block;
+        color: var(--gray-600);
+        font-size: 0.85rem;
+    }
+
+    /* CTA – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .job-hero h1 {
+            font-size: 2rem;
+        }
+        .job-content {
+            font-size: 0.95rem;
+        }
+        .sidebar-card {
+            padding: 1rem;
+        }
+        .application-form .btn-primary {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="job-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:job_list' %}">Careers</a></li>
+                    <li class="breadcrumb-item active">{{ job.title|truncatechars:50 }}</li>
+                </ol>
+            </nav>
+            <h1>{{ job.title }}</h1>
+            <div class="meta d-flex flex-wrap align-items-center gap-3">
+                <span><i class="fas fa-map-pin me-1"></i> {{ job.location|default:"Remote/Anywhere" }}</span>
+                <span><i class="fas fa-briefcase me-1"></i> {{ job.get_job_type_display }}</span>
+                <span><i class="fas fa-tag me-1"></i> {{ job.category.name }}</span>
+                {% if job.is_remote %}<span class="badge bg-info text-white">Remote</span>{% endif %}
+                {% if job.is_featured %}<span class="badge bg-warning text-dark">Featured</span>{% endif %}
+            </div>
+            <div class="mt-2">
+                <span><i class="far fa-calendar-alt me-1"></i> Deadline: {{ job.application_deadline|date:"F d, Y" }}</span>
+                <span class="ms-3"><i class="fas fa-eye me-1"></i> {{ job.views }} views</span>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:job_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Jobs
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# JOB DETAIL & APPLICATION #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main Content #}
+                <div class="col-lg-7">
+                    <div class="job-content">
+                        <h4>Description</h4>
+                        {{ job.description|safe }}
+
+                        {% if job.responsibilities %}
+                            <h4>Responsibilities</h4>
+                            {{ job.responsibilities|safe }}
+                        {% endif %}
+
+                        {% if job.requirements %}
+                            <h4>Requirements</h4>
+                            {{ job.requirements|safe }}
+                        {% endif %}
+
+                        <div class="row mt-4 g-3">
+                            {% if job.salary_range %}
+                                <div class="col-12 col-md-6">
+                                    <strong>Salary Range:</strong> {{ job.salary_range }}
+                                </div>
+                            {% endif %}
+                            <div class="col-12 col-md-6">
+                                <strong>Experience Level:</strong> {{ job.get_experience_level_display }}
+                            </div>
+                            {% if job.department %}
+                                <div class="col-12 col-md-6">
+                                    <strong>Department:</strong> {{ job.department }}
+                                </div>
+                            {% endif %}
+                            <div class="col-12 col-md-6">
+                                <strong>Job Type:</strong> {{ job.get_job_type_display }}
+                            </div>
+                            <div class="col-12">
+                                <strong>Application Deadline:</strong> {{ job.application_deadline|date:"F d, Y" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-5">
+                    {# Application Form #}
+                    <div class="sidebar-card">
+                        <h5><i class="fas fa-paper-plane text-primary me-2"></i> Apply Now</h5>
+                        <p class="text-muted small">Fill in the form below to apply for this position.</p>
+                        <form method="post" enctype="multipart/form-data" class="application-form" action="{% url 'geo:job_apply' slug=job.slug %}">
+                            {% csrf_token %}
+
+                            {% if apply_form.non_field_errors %}
+                                <div class="alert alert-danger">{% for error in apply_form.non_field_errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label for="{{ apply_form.first_name.id_for_label }}" class="form-label small fw-semibold">First Name</label>
+                                    {{ apply_form.first_name }}
+                                    {% if apply_form.first_name.errors %}<div class="text-danger small">{% for error in apply_form.first_name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                                </div>
+                                <div class="col-6">
+                                    <label for="{{ apply_form.last_name.id_for_label }}" class="form-label small fw-semibold">Last Name</label>
+                                    {{ apply_form.last_name }}
+                                    {% if apply_form.last_name.errors %}<div class="text-danger small">{% for error in apply_form.last_name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label for="{{ apply_form.email.id_for_label }}" class="form-label small fw-semibold">Email</label>
+                                    {{ apply_form.email }}
+                                    {% if apply_form.email.errors %}<div class="text-danger small">{% for error in apply_form.email.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label for="{{ apply_form.phone.id_for_label }}" class="form-label small fw-semibold">Phone</label>
+                                    {{ apply_form.phone }}
+                                    {% if apply_form.phone.errors %}<div class="text-danger small">{% for error in apply_form.phone.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label for="{{ apply_form.resume.id_for_label }}" class="form-label small fw-semibold">Resume</label>
+                                    {{ apply_form.resume }}
+                                    {% if apply_form.resume.errors %}<div class="text-danger small">{% for error in apply_form.resume.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                                    <div class="form-text">Accepted: PDF, DOC, DOCX (max 5MB)</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="{{ apply_form.cover_letter.id_for_label }}" class="form-label small fw-semibold">Cover Letter</label>
+                                    {{ apply_form.cover_letter }}
+                                    {% if apply_form.cover_letter.errors %}<div class="text-danger small">{% for error in apply_form.cover_letter.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                                </div>
+                                <div class="col-12 d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane me-2"></i> Submit Application</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    {# Related Jobs #}
+                    {% if related %}
+                        <div class="sidebar-card">
+                            <h5><i class="fas fa-link text-primary me-2"></i> Related Jobs</h5>
+                            {% for rel in related %}
+                                <div class="related-item">
+                                    <a href="{% url 'geo:job_detail' slug=rel.slug %}">{{ rel.title }}</a>
+                                    <small>{{ rel.location|default:"Remote/Anywhere" }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# Quick contact #}
+                    <div class="sidebar-card" style="background: var(--primary) !important; border-color: var(--primary);">
+                        <h5 class="text-white"><i class="fas fa-phone me-2"></i> Have Questions?</h5>
+                        <p class="text-white-50 small">Contact our HR team for more information.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact HR
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Not Ready to Apply <span class="text-accent">Yet</span>?</h2>
+            <p class="lead opacity-75">Learn more about working at Geo‑Junction.</p>
+            <a href="{% url 'geo:about' %}" class="btn btn-cta mt-3"><i class="fas fa-info-circle me-2"></i> About Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:job_list' %}" class="text-muted small"><i class="fas fa-briefcase me-1"></i> Careers</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

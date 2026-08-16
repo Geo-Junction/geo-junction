@@ -1,0 +1,402 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Document Library – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"Access Geo‑Junction's technical documents, brochures, fact sheets, and presentations." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       DOCUMENTS LIST – Additional styles
+       ============================================================== */
+    .resources-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .resources-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/resources-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .resources-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .resources-hero h1 {
+        font-weight: 800;
+        font-size: 3rem;
+    }
+    .resources-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .resources-hero p.lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Filter bar – glass */
+    .filter-bar {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.06));
+    }
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .filter-bar .form-control:focus,
+    .filter-bar .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(26, 82, 118, 0.15);
+    }
+
+    /* Document card – glass */
+    .doc-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        height: 100%;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        border-left: 4px solid var(--accent);
+    }
+    .doc-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 56px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .doc-card .doc-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+    .doc-card h5 {
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .doc-card p {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+    }
+    .doc-card .meta {
+        color: var(--gray-600);
+        font-size: 0.85rem;
+    }
+    .doc-card .btn-download {
+        border-radius: 50px;
+        padding: 0.3rem 1.2rem;
+        font-size: 0.85rem;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        transition: var(--transition);
+        font-weight: 600;
+    }
+    .doc-card .btn-download:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(26, 82, 118, 0.2);
+    }
+    .doc-card .badge {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+    }
+
+    /* Empty state */
+    .empty-state i {
+        opacity: 0.4;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* CTA section – glass dark */
+    .cta-section {
+        background: rgba(10, 42, 63, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+        border-top: 1px solid rgba(241, 196, 15, 0.1);
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .resources-hero h1 {
+            font-size: 2.2rem;
+        }
+        .filter-bar {
+            padding: 1rem;
+        }
+        .filter-bar .row > div {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="resources-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Document Library</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Document <span class="highlight">Library</span></h1>
+            <p class="lead">Access our technical documents, brochures, and resources.</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:report_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-file-pdf me-1"></i> Reports
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# FILTER BAR #}
+    {# ============================================================== #}
+    <div class="container mt-3">
+        <div class="filter-bar">
+            <form method="get" action="{% url 'geo:document_list' %}" id="documentFilterForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label for="searchInput" class="form-label fw-semibold small text-uppercase text-muted">Search</label>
+                        <input type="text" name="q" id="searchInput" class="form-control" placeholder="Search documents..." value="{{ search_query|default:'' }}">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="typeSelect" class="form-label fw-semibold small text-uppercase text-muted">Document Type</label>
+                        <select name="type" id="typeSelect" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Types</option>
+                            {% for key, label in doc_types %}
+                                <option value="{{ key }}" {% if current_type == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+                {% if search_query or current_type %}
+                    <div class="mt-2 text-end">
+                        <a href="{% url 'geo:document_list' %}" class="text-muted small">
+                            <i class="fas fa-times me-1"></i> Clear filters
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# DOCUMENTS GRID #}
+    {# ============================================================== #}
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                {% for doc in page_obj %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="doc-card">
+                            <div class="doc-icon">
+                                <i class="fas 
+                                    {% if doc.document_type == 'brochure' %}fa-book-open
+                                    {% elif doc.document_type == 'fact_sheet' %}fa-clipboard-list
+                                    {% elif doc.document_type == 'presentation' %}fa-presentation
+                                    {% elif doc.document_type == 'technical' %}fa-file-code
+                                    {% elif doc.document_type == 'investor' %}fa-chart-line
+                                    {% elif doc.document_type == 'sustainability' %}fa-leaf
+                                    {% else %}fa-file-alt{% endif %}">
+                                </i>
+                            </div>
+                            <span class="badge bg-secondary mb-1">{{ doc.get_document_type_display }}</span>
+                            <h5>{{ doc.title }}</h5>
+                            <p>{{ doc.description|truncatechars:80 }}</p>
+                            <div class="meta">
+                                <span><i class="far fa-calendar-alt me-1"></i> {{ doc.created_at|date:"M d, Y" }}</span>
+                                <span class="ms-3"><i class="fas fa-download me-1"></i> {{ doc.download_count }}</span>
+                                {% if doc.is_public %}
+                                    <span class="badge bg-success ms-2">Public</span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ doc.file.url }}" target="_blank" class="btn btn-download btn-sm mt-2">
+                                <i class="fas fa-download me-1"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No documents found</h4>
+                        <p class="text-muted">Try adjusting your filters or check back later.</p>
+                        <a href="{% url 'geo:document_list' %}" class="btn btn-outline-primary mt-3">View All Documents</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination #}
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Document pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Looking for <span style="color: var(--accent);">More</span> Resources?</h2>
+            <p class="lead opacity-75">Contact us for specific technical documents or inquiries.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:report_list' %}" class="text-muted small"><i class="fas fa-file-pdf me-1"></i> Reports</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

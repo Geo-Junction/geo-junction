@@ -1,0 +1,178 @@
+{% extends 'aplus/base.html' %}
+{% load static %}
+
+{% block title %}About Us – Aplus Initiative{% endblock %}
+
+{% block meta_description %}Learn about Aplus Initiative, CBU's premier tutoring platform. Our mission is to help every CBU student excel through quality tutoring and structured learning materials.{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     ABOUT SECTION
+     ============================================================ -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5" data-animate>
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold">About <span class="text-gradient">Aplus Initiative</span></h1>
+                <p class="lead text-muted">Empowering CBU students to achieve academic excellence.</p>
+            </div>
+        </div>
+
+        <!-- Mission -->
+        <div class="row g-4 mb-5" data-animate>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg p-4 h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary-soft rounded-circle p-3 me-3">
+                            <i class="fas fa-bullseye fa-2x text-primary"></i>
+                        </div>
+                        <h3 class="fw-bold mb-0">Our Mission</h3>
+                    </div>
+                    <p class="text-muted">To provide every CBU student with access to quality tutoring, structured course materials, and personalized learning support – helping them achieve their academic goals and excel in their studies.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg p-4 h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary-soft rounded-circle p-3 me-3">
+                            <i class="fas fa-eye fa-2x text-primary"></i>
+                        </div>
+                        <h3 class="fw-bold mb-0">Our Vision</h3>
+                    </div>
+                    <p class="text-muted">To become Zambia's leading academic support platform, recognized for excellence in tutoring, content quality, and student success – transforming how students learn and achieve at CBU and beyond.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- What We Offer -->
+        <div class="row g-4 mb-5" data-animate>
+            <div class="col-12">
+                <h2 class="fw-bold text-center mb-4">What We <span class="text-gradient">Offer</span></h2>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-4">
+                    <i class="fas fa-book-open fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Structured Courses</h5>
+                    <p class="text-muted">8 core CBU courses organized with clear modules and topics.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-4">
+                    <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
+                    <h5 class="fw-bold">Tutorial Sheets</h5>
+                    <p class="text-muted">Downloadable PDFs with solutions for every topic.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-4">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <h5 class="fw-bold">Practice Tests</h5>
+                    <p class="text-muted">Instant feedback and progress tracking to gauge your understanding.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-4">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Verified Tutors</h5>
+                    <p class="text-muted">Expert tutors who understand the CBU curriculum inside out.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-4">
+                    <i class="fas fa-calendar-check fa-3x text-warning mb-3"></i>
+                    <h5 class="fw-bold">Book Sessions</h5>
+                    <p class="text-muted">Easily schedule 1-on-1 tutoring sessions that fit your timetable.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center p-4">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5 class="fw-bold">Progress Tracking</h5>
+                    <p class="text-muted">Monitor your learning journey and celebrate your achievements.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutors -->
+        <div class="row" data-animate>
+            <div class="col-12">
+                <h2 class="fw-bold text-center mb-4">Meet Our <span class="text-gradient">Tutors</span></h2>
+                <p class="text-center text-muted mb-4">Our tutors are CBU alumni and experts dedicated to your success.</p>
+            </div>
+            {% for tutor in tutors %}
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card text-center shadow-sm p-3 h-100">
+                    <div class="tutor-avatar mx-auto mb-3">
+                        {% if tutor.user.profile_picture %}
+                        <img src="{{ tutor.user.profile_picture.url }}" alt="{{ tutor.display_name }}" class="rounded-circle" width="80" height="80">
+                        {% else %}
+                        <div class="avatar-placeholder">{{ tutor.user.full_name|slice:":1" }}</div>
+                        {% endif %}
+                        {% if tutor.is_verified %}
+                        <span class="verified-badge"><i class="fas fa-check-circle text-success"></i></span>
+                        {% endif %}
+                    </div>
+                    <h6 class="fw-bold">{{ tutor.display_name }}</h6>
+                    <p class="text-muted small">{{ tutor.headline|truncatechars:40 }}</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <span class="badge bg-warning"><i class="fas fa-star me-1"></i>{{ tutor.average_rating|floatformat:1 }}</span>
+                        <span class="badge bg-secondary">{{ tutor.total_reviews }} reviews</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-muted">Tutors coming soon.</div>
+            {% endfor %}
+        </div>
+
+        <!-- CTA -->
+        <div class="row mt-5" data-animate>
+            <div class="col-12 text-center">
+                <a href="{% url 'aplus:student_signup' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Join Aplus Initiative
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .bg-primary-soft { background: #dbeafe; }
+    .tutor-avatar {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+    }
+    .tutor-avatar img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #e2e8f0;
+    }
+    .avatar-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #2563eb;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    .verified-badge {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: white;
+        border-radius: 50%;
+        padding: 2px;
+        font-size: 1.2rem;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,405 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:service.name|add:" – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:service.short_description }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    /* ==============================================================
+       SERVICES DETAIL PAGE – Additional styles
+       ============================================================== */
+    .detail-hero {
+        background: var(--primary-dark);
+        padding: 3rem 0 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .detail-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/service-detail-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    .detail-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    .detail-hero h1 {
+        font-weight: 800;
+        font-size: 2.8rem;
+    }
+    .detail-hero .highlight {
+        background: linear-gradient(135deg, var(--accent), #f9e79f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .detail-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    .detail-hero .breadcrumb-item a {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+    }
+    .detail-hero .breadcrumb-item.active {
+        color: var(--accent);
+    }
+    .detail-hero .breadcrumb-item a:hover {
+        color: white;
+    }
+    .detail-hero .lead {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.2rem;
+    }
+
+    /* Service content */
+    .service-content {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: var(--gray-700);
+    }
+    .service-content h2,
+    .service-content h3 {
+        margin-top: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    .service-content ul {
+        padding-left: 1.5rem;
+    }
+    .service-content ul li {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Sidebar card – glass */
+    .sidebar-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .sidebar-card h5 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .sidebar-card ul {
+        list-style: none;
+        padding: 0;
+    }
+    .sidebar-card ul li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .sidebar-card ul li:last-child {
+        border-bottom: none;
+    }
+
+    /* Related service card */
+    .related-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .related-card:hover {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: var(--primary-light);
+        transform: translateX(4px);
+    }
+    .related-card .icon {
+        font-size: 1.5rem;
+        color: var(--primary);
+        width: 2.5rem;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    .related-card .content {
+        flex: 1;
+    }
+    .related-card .content h6 {
+        font-weight: 700;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+    }
+    .related-card .content small {
+        color: var(--gray-600);
+        font-size: 0.8rem;
+    }
+    .related-card .btn-link {
+        color: var(--primary);
+        padding: 0;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+    .related-card .btn-link:hover {
+        color: var(--accent-dark);
+    }
+
+    /* Feature icons */
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .feature-item:last-child {
+        border-bottom: none;
+    }
+    .feature-item i {
+        font-size: 1.5rem;
+        color: var(--primary);
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+    }
+    .feature-item h6 {
+        font-weight: 700;
+        margin-bottom: 0.1rem;
+    }
+    .feature-item p {
+        margin-bottom: 0;
+        font-size: 0.9rem;
+        color: var(--gray-600);
+    }
+
+    .cta-section {
+        background: var(--primary);
+        padding: 3rem 0;
+        color: white;
+        text-align: center;
+    }
+    .btn-cta {
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        padding: 0.8rem 2.5rem;
+        border-radius: 50px;
+        transition: var(--transition);
+        border: none;
+    }
+    .btn-cta:hover {
+        background: var(--accent-dark);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(241, 196, 15, 0.35);
+    }
+
+    @media (max-width: 767.98px) {
+        .detail-hero h1 {
+            font-size: 2rem;
+        }
+        .service-content {
+            font-size: 0.95rem;
+        }
+        .related-card {
+            padding: 0.5rem 0.75rem;
+        }
+        .feature-item {
+            padding: 0.5rem 0;
+        }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    {# ============================================================== #}
+    {# HERO #}
+    {# ============================================================== #}
+    <section class="detail-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'geo:service_list' %}">Services</a></li>
+                    <li class="breadcrumb-item active">{{ service.name }}</li>
+                </ol>
+            </nav>
+            <h1>{{ service.name }}</h1>
+            <p class="lead">{{ service.short_description }}</p>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# QUICK LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a href="javascript:history.back()" class="btn btn-outline-accent btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-list me-1"></i> All Services
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-info-circle me-1"></i> About
+                </a>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-envelope me-1"></i> Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ============================================================== #}
+    {# DETAIL CONTENT #}
+    {# ============================================================== #}
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5">
+                {# Main content #}
+                <div class="col-lg-8">
+                    <div class="service-content">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}" class="img-fluid rounded-4 mb-4" style="width:100%; max-height:400px; object-fit:cover;">
+                        {% endif %}
+                        {{ service.description|safe }}
+                    </div>
+
+                    {# Features / Benefits #}
+                    <div class="row g-3 mt-4">
+                        <div class="col-12 col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h6>Accurate Data</h6>
+                                    <p>High‑precision measurements you can trust.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <h6>Timely Delivery</h6>
+                                    <p>On‑time results for your exploration timeline.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-leaf"></i>
+                                <div>
+                                    <h6>Sustainable Practices</h6>
+                                    <p>Environmentally responsible exploration.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Sidebar #}
+                <div class="col-lg-4">
+                    {# Service details #}
+                    <div class="sidebar-card">
+                        <h5><i class="fas fa-info-circle me-2 text-primary"></i> Service Details</h5>
+                        <ul>
+                            <li><i class="fas fa-tag text-primary me-2"></i> Category: <a href="{% url 'geo:service_category' slug=service.category.slug %}" class="text-decoration-none">{{ service.category.name }}</a></li>
+                            <li><i class="fas fa-star text-warning me-2"></i> Featured: {% if service.is_featured %}Yes{% else %}No{% endif %}</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Status: {% if service.is_active %}Active{% else %}Inactive{% endif %}</li>
+                            {% if service.order %}
+                                <li><i class="fas fa-sort me-2 text-muted"></i> Display Order: {{ service.order }}</li>
+                            {% endif %}
+                        </ul>
+                        <hr>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-envelope me-2"></i> Inquire Now
+                        </a>
+                    </div>
+
+                    {# Related services #}
+                    {% if related %}
+                        <div class="sidebar-card">
+                            <h5><i class="fas fa-link me-2 text-primary"></i> Related Services</h5>
+                            {% for rel in related %}
+                                <div class="related-card">
+                                    <div class="icon"><i class="fas {{ rel.icon|default:'fa-cog' }}"></i></div>
+                                    <div class="content">
+                                        <h6>{{ rel.name }}</h6>
+                                        <small>{{ rel.short_description|truncatechars:50 }}</small>
+                                    </div>
+                                    <a href="{% url 'geo:service_detail' slug=rel.slug %}" class="btn btn-link" aria-label="View {{ rel.name }}">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {# Quick contact #}
+                    <div class="sidebar-card bg-primary text-white" style="background: var(--primary) !important;">
+                        <h5 class="text-white"><i class="fas fa-phone me-2"></i> Need Help?</h5>
+                        <p class="text-white-50 small">Our team is ready to assist you with your geophysical exploration needs.</p>
+                        <a href="{% url 'geo:contact' %}" class="btn btn-gold w-100">
+                            <i class="fas fa-envelope me-2"></i> Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# CTA #}
+    {# ============================================================== #}
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="fw-bold">Ready to Get Started?</h2>
+            <p class="lead opacity-75">Contact our team for a consultation.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    {# ============================================================== #}
+    {# FOOTER UTILITY LINKS #}
+    {# ============================================================== #}
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto">
+                <a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-list me-1"></i> All Services</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:project_list' %}" class="text-muted small"><i class="fas fa-bullseye me-1"></i> Projects</a>
+            </div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto">
+                <a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,216 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:"Gallery – Geo‑Junction" }}{% endblock title %}
+
+{% block meta_description %}{{ meta_description|default:"View Geo‑Junction's gallery of fieldwork, equipment, team events, and offices." }}{% endblock meta_description %}
+
+{% block extra_head %}
+<style>
+    .gallery-hero {
+        background: var(--primary-dark);
+        padding: 4rem 0 3rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .gallery-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/gallery-hero.jpg" %}') center/cover no-repeat;
+        opacity: 0.12;
+        z-index: 0;
+    }
+    .gallery-hero .container { position: relative; z-index: 1; }
+    .gallery-hero h1 { font-weight: 800; font-size: 3rem; }
+    .gallery-hero .highlight { background: linear-gradient(135deg, var(--accent), #f9e79f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .gallery-hero p.lead { color: rgba(255,255,255,0.85); font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+
+    .filter-bar {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--glass-shadow, 0 4px 20px rgba(0,0,0,0.06));
+    }
+    .filter-bar .form-select,
+    .filter-bar .form-control {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .gallery-card {
+        position: relative;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        transition: var(--transition);
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .gallery-card:hover { transform: translateY(-6px); box-shadow: 0 16px 56px rgba(0,0,0,0.08); }
+    .gallery-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+    .gallery-card:hover img { transform: scale(1.03); }
+    .gallery-card .card-body {
+        padding: 1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(2px);
+    }
+    .gallery-card .card-body h6 { font-weight: 700; margin-bottom: 0.2rem; }
+    .gallery-card .card-body .caption { font-size: 0.85rem; color: var(--gray-600); }
+    .gallery-card .badge-category {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: var(--accent);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.8rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .pagination .page-link {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--primary);
+    }
+    .pagination .page-link:hover { background: var(--primary); color: white; }
+    .pagination .page-item.active .page-link { background: var(--primary); border-color: var(--primary); color: white; }
+
+    .empty-state i { opacity: 0.4; }
+
+    @media (max-width: 767.98px) {
+        .gallery-hero h1 { font-size: 2.2rem; }
+        .gallery-card img { height: 160px; }
+        .filter-bar { padding: 1rem; }
+    }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    <section class="gallery-hero">
+        <div class="container">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb justify-content-center bg-transparent">
+                    <li class="breadcrumb-item"><a href="{% url 'geo:home' %}" class="text-white-50"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Gallery</li>
+                </ol>
+            </nav>
+            <h1 class="display-4 fw-bold">Photo <span class="highlight">Gallery</span></h1>
+            <p class="lead">A glimpse into our fieldwork, equipment, team, and offices.</p>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto"><a href="javascript:history.back()" class="btn btn-outline-accent btn-sm"><i class="fas fa-arrow-left me-1"></i> Back</a></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="btn btn-outline-light btn-sm"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+
+    <div class="container mt-3">
+        <div class="filter-bar">
+            <form method="get" action="{% url 'geo:gallery_list' %}" class="row g-3 align-items-end">
+                <div class="col-12 col-md-5">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Search</label>
+                    <input type="text" name="q" class="form-control" placeholder="Search gallery..." value="{{ search_query|default:'' }}">
+                </div>
+                <div class="col-12 col-md-5">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Category</label>
+                    <select name="category" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for key, label in categories %}
+                            <option value="{{ key }}" {% if current_category == key %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i> Filter</button>
+                </div>
+            </form>
+            {% if search_query or current_category %}
+                <div class="mt-2 text-end"><a href="{% url 'geo:gallery_list' %}" class="text-muted small"><i class="fas fa-times me-1"></i> Clear filters</a></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <section class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                {% for image in page_obj %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="gallery-card">
+                            <img src="{{ image.image.url }}" alt="{{ image.title|default:image.caption|default:'Gallery image' }}" loading="lazy">
+                            <span class="badge-category">{{ image.get_category_display }}</span>
+                            <div class="card-body">
+                                <h6>{{ image.title|default:"Untitled" }}</h6>
+                                <p class="caption">{{ image.caption|truncatechars:60 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5 empty-state">
+                        <i class="fas fa-images fa-3x text-muted mb-3 d-block"></i>
+                        <h4 class="text-muted">No images found</h4>
+                        <p class="text-muted">Try adjusting your filters.</p>
+                        <a href="{% url 'geo:gallery_list' %}" class="btn btn-outline-primary mt-3">View All</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">&laquo;&laquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">&laquo;</a></li>
+                        {% endif %}
+                        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">&raquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">&raquo;&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="cta-section section-glass-dark py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold">Want to See <span class="text-accent">More</span>?</h2>
+            <p class="lead opacity-75">Contact us for additional media or project-specific imagery.</p>
+            <a href="{% url 'geo:contact' %}" class="btn btn-cta mt-3"><i class="fas fa-envelope me-2"></i> Contact Us</a>
+        </div>
+    </section>
+
+    <div class="container mt-4 mb-5">
+        <div class="row g-3 justify-content-center">
+            <div class="col-auto"><a href="{% url 'geo:home' %}" class="text-muted small"><i class="fas fa-home me-1"></i> Home</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:about' %}" class="text-muted small"><i class="fas fa-info-circle me-1"></i> About</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:service_list' %}" class="text-muted small"><i class="fas fa-cogs me-1"></i> Services</a></div>
+            <div class="col-auto"><span class="text-muted">|</span></div>
+            <div class="col-auto"><a href="{% url 'geo:contact' %}" class="text-muted small"><i class="fas fa-envelope me-1"></i> Contact</a></div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends 'geo/base.html' %}
+{% load static %}
+
+{% block title %}{{ page.title|default:"Page" }} – Geo‑Junction{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 order-lg-1 order-2">
+                <div class="card shadow-sm p-4 sticky-md-top" style="top:100px;">
+                    <h5>Sidebar</h5>
+                    <p class="text-muted">This is a left sidebar. You can add navigation, links, or additional content here.</p>
+                    <hr>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Link 1</a></li>
+                        <li><a href="#">Link 2</a></li>
+                        <li><a href="#">Link 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8 order-lg-2 order-1">
+                <h1 class="display-5 fw-bold">{{ page.title }}</h1>
+                {% if page.featured_image %}
+                <img src="{{ page.featured_image.url }}" alt="{{ page.title }}" class="img-fluid rounded-4 mb-4" style="max-height:300px; width:100%; object-fit:cover;">
+                {% endif %}
+                <div class="content">{{ page.content|safe }}</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
